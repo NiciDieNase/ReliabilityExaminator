@@ -69,7 +69,7 @@ public class CameraHandler {
 					return;
 				}
 				try{
-					Log.d(TAG,"Tango connected, setting up RGB-Renderer");
+//					Log.d(TAG,"Tango connected, setting up RGB-Renderer");
 					synchronized (mContext){
 						if(mTopConnectedTextureIDGlThread == INVALID_TEXTURE_ID){
 							mTopConnectedTextureIDGlThread = mRgbRenderer.getTextureId();
@@ -98,7 +98,7 @@ public class CameraHandler {
 					return;
 				}
 				try{
-					Log.d(TAG,"Tango connected, setting up Fisheye-Renderer");
+//					Log.d(TAG,"Tango connected, setting up Fisheye-Renderer");
 					synchronized (mContext){
 						if(mBottomConnectedTextureIDGlThread == INVALID_TEXTURE_ID){
 							mBottomConnectedTextureIDGlThread = mRgbRenderer.getTextureId();
@@ -134,7 +134,7 @@ public class CameraHandler {
 			@Override
 			public void onFrameAvailable(int cameraID) {
 				if(cameraID == TangoCameraIntrinsics.TANGO_CAMERA_COLOR){
-					Log.d(TAG, "New RGB-Frame");
+//					Log.d(TAG, "New RGB-Frame");
 					if(mRgbView.getRenderMode() != GLSurfaceView.RENDERMODE_WHEN_DIRTY){
 						mRgbView.setRenderMode(GLSurfaceView.RENDERMODE_WHEN_DIRTY);
 					}
@@ -142,7 +142,7 @@ public class CameraHandler {
 					mRgbView.requestRender();
 				}
 				if(cameraID == TangoCameraIntrinsics.TANGO_CAMERA_FISHEYE){
-					Log.d(TAG, "New Fisheye-Frame");
+//					Log.d(TAG, "New Fisheye-Frame");
 					if(mFisheyeView.getRenderMode() != GLSurfaceView.RENDERMODE_WHEN_DIRTY){
 						mFisheyeView.setRenderMode(GLSurfaceView.RENDERMODE_WHEN_DIRTY);
 					}

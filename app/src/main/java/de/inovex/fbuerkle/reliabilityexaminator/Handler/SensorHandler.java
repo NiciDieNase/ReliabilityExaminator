@@ -6,11 +6,16 @@ import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
 import android.util.Log;
+import android.view.ViewGroup;
 import android.widget.TextView;
 
 import java.text.DecimalFormat;
 import java.util.LinkedList;
 import java.util.List;
+
+import butterknife.BindView;
+import butterknife.ButterKnife;
+import de.inovex.fbuerkle.reliabilityexaminator.R;
 
 /**
  * Created by felix on 22/11/16.
@@ -27,15 +32,15 @@ public class SensorHandler implements SensorEventListener{
 	private final float[] mMagnetometerReading = new float[3];
 	private final float[] mRotationMatrix = new float[9];
 	private final float[] mOrientationAngles = new float[3];
-	private TextView tvPitchValue;
 	private List<Double> angleBuffer = new LinkedList<>();
+	@BindView(R.id.tv_pitch_value) protected TextView tvPitchValue;
 
-	public SensorHandler(Context context, TextView displayView){
+	public SensorHandler(Context context, ViewGroup rootView){
 		mContext = context;
+		ButterKnife.bind(this,rootView);
 		mSensorManager = (SensorManager) mContext.getSystemService(Context.SENSOR_SERVICE);
 		mAccelerationSensor = mSensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
 		mMagnetometer = mSensorManager.getDefaultSensor(Sensor.TYPE_MAGNETIC_FIELD);
-		tvPitchValue = displayView;
 	}
 
 	@Override

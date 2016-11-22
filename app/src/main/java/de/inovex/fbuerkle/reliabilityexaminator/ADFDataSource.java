@@ -17,6 +17,7 @@
 package de.inovex.fbuerkle.reliabilityexaminator;
 
 import android.content.Context;
+import android.util.Log;
 import android.widget.Toast;
 
 import com.google.atap.tangoservice.Tango;
@@ -30,61 +31,58 @@ import java.util.ArrayList;
  * deleted or added, getFullUUIDList needs to be called to update the UUIDList within this class.
  */
 public class ADFDataSource {
-    private Tango mTango;
-    private ArrayList<String> mFullUUIDList;
-    private Context mContext;
+	private static final String TAG = ADFDataSource.class.getSimpleName();
+	private Tango mTango;
+	private ArrayList<String> mFullUUIDList = null;
+	private Context mContext;
 
-    public ADFDataSource(Context context) {
-        mContext = context;
-        mTango = new Tango(context);
-        try {
-            mFullUUIDList = mTango.listAreaDescriptions();
-        } catch (TangoErrorException e) {
-            Toast.makeText(mContext, R.string.tango_error, Toast.LENGTH_SHORT).show();
-        }
-        if (mFullUUIDList.size() == 0) {
-            Toast.makeText(context, R.string.no_adfs_tango_error, Toast.LENGTH_SHORT).show();
-        }
-    }
+	public ADFDataSource(Context context) {
+		mContext = context;
+		mTango = new Tango(context);
+	}
 
-    public String[] getFullUUIDList() {
-        try {
-            mFullUUIDList = mTango.listAreaDescriptions();
-        } catch (TangoErrorException e) {
-            Toast.makeText(mContext, R.string.tango_error, Toast.LENGTH_SHORT).show();
-        }
-        return mFullUUIDList.toArray(new String[mFullUUIDList.size()]);
-    }
+	public String[] getFullUUIDList() {
+		try {
+			mFullUUIDList = mTango.listAreaDescriptions();
+		} catch (TangoErrorException e) {
+			if(mContext != null){
+				Toast.makeText(mContext, R.string.tango_error, Toast.LENGTH_SHORT).show();
+			}
+			Log.d(TAG,"Tango Error");
+		}
+		if (mFullUUIDList.size() == 0) {
+			if(mContext != null){
+				Toast.makeText(mContext, R.string.no_adfs_tango_error, Toast.LENGTH_SHORT).show();
+			}
+			Log.d(TAG,"No ADFS");
+		}
+		Log.d(TAG,"Return UUID-Array");
+		return mFullUUIDList.toArray(new String[mFullUUIDList.size()]);
+	}
 
-    public String[] getUUIDNames() {
-        TangoAreaDescriptionMetaData metadata = new TangoAreaDescriptionMetaData();
-        String[] list = new String[mFullUUIDList.size()];
-        for (int i = 0; i < list.length; i++) {
-            try {
-                metadata = mTango.loadAreaDescriptionMetaData(mFullUUIDList.get(i));
-            } catch (TangoErrorException e) {
-                Toast.makeText(mContext, R.string.tango_error, Toast.LENGTH_SHORT).show();
-            }
-            list[i] = new String(metadata.get("name"));
-        }
-        return list;
-    }
-
-    public void deleteADFandUpdateList(String uuid) {
-        try {
-            mTango.deleteAreaDescription(uuid);
-        } catch (TangoErrorException e) {
-            Toast.makeText(mContext, R.string.no_uuid_tango_error, Toast.LENGTH_SHORT).show();
-        }
-        mFullUUIDList.clear();
-        try {
-            mFullUUIDList = mTango.listAreaDescriptions();
-        } catch (TangoErrorException e) {
-            Toast.makeText(mContext, R.string.tango_error, Toast.LENGTH_SHORT).show();
-        }
-    }
-
-    public Tango getTango() {
-        return mTango;
-    }
+	public String[] getUUIDNames() {
+		if(mFullUUIDList == null){
+			getFullUUIDList();
+		}
+		TangoAreaDescriptionMetaData metadata = new TangoAreaDescriptionMetaData();
+		String[] list = new String[mFullUUIDList.size()];
+		for (int i = 0; i < mFullUUIDList.size(); i++) {
+			try {
+				metadata = mTango.loadAreaDescriptionMetaData(mFullUUIDList.get(i));
+			} catch (TangoErrorException e) {
+				if(mContext != null){
+					Toast.makeText(mContext, R.string.tango_error, Toast.LENGTH_SHORT).show();
+				}
+				Log.d(TAG,"Tango Error while loading ADF Metadata");
+			}
+			byte[] bytes = metadata.get(TangoAreaDescriptionMetaData.KEY_NAME);
+			if(bytes != null){
+				list[i] = new String(bytes);
+			} else {
+				list[i] = "<no_name_found>";
+			}
+			Log.d(TAG,list[i]);
+		}
+		return list;
+	}
 }

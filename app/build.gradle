@@ -24,12 +24,19 @@ dependencies {
     androidTestCompile('com.android.support.test.espresso:espresso-core:2.2.2', {
         exclude group: 'com.android.support', module: 'support-annotations'
     })
+    testCompile 'junit:junit:4.12'
+
     compile(name: 'TangoSDK_Zaniah_Java', ext: 'jar')
     compile(name: 'TangoSupport_Zaniah_Java', ext: 'aar')
     compile(name: 'TangoUX_Zaniah_Java', ext: 'aar')
+
     compile 'com.android.support:appcompat-v7:25.0.1'
     compile 'com.android.support:design:25.0.1'
-    testCompile 'junit:junit:4.12'
+    compile 'com.android.support:recyclerview-v7:25.0.1'
+
     compile 'com.android.support.constraint:constraint-layout:1.0.0-beta4'
-    compile 'org.rajawali3d:rajawali:1.0.325@aar'
+//    compile 'org.rajawali3d:rajawali:1.0.325@aar'
+    compile 'com.jakewharton:butterknife:8.4.0'
+    annotationProcessor 'com.jakewharton:butterknife-compiler:8.4.0'
+
 }

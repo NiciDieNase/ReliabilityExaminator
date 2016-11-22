@@ -1,38 +1,43 @@
 package de.inovex.fbuerkle.reliabilityexaminator.Activities;
 
-import android.opengl.GLSurfaceView;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.TextView;
+
+import com.google.atap.tangoservice.Tango;
 
 import de.inovex.fbuerkle.reliabilityexaminator.Handler.SensorHandler;
 import de.inovex.fbuerkle.reliabilityexaminator.Handler.TangoHandler;
 import de.inovex.fbuerkle.reliabilityexaminator.R;
+import de.inovex.fbuerkle.reliabilityexaminator.SelectADFDialog;
 
-public class ExaminatorActivity extends AppCompatActivity{
+public class ExaminatorActivity extends AppCompatActivity implements SelectADFDialog.ADFSelectListener{
 
 	private static final String TAG = ExaminatorActivity.class.getSimpleName();
 
 	private SensorHandler mSensorHandler;
 	private TangoHandler mTangoHandler;
 
+	enum ADFaction{undef, export, load;}
+	ADFaction mADFaction = ADFaction.undef;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main);
-		Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+		ViewGroup rootView = (ViewGroup) findViewById(R.id.layout_tango);
 
-		GLSurfaceView mTopPreview = (GLSurfaceView) findViewById(R.id.top_preview);
-		GLSurfaceView mBottomPreview = (GLSurfaceView) findViewById(R.id.bottom_preview);
 		TextView textView = (TextView) findViewById(R.id.tv_pitch_value);
 
+		Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
 		setSupportActionBar(toolbar);
 		FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
 		fab.setOnClickListener(new View.OnClickListener() {
@@ -43,9 +48,14 @@ public class ExaminatorActivity extends AppCompatActivity{
 			}
 		});
 
-		mSensorHandler = new SensorHandler(this,textView);
-		mTangoHandler = new TangoHandler(this, mTopPreview, mBottomPreview);
+		startActivityForResult(
+				Tango.getRequestPermissionIntent(Tango.PERMISSIONTYPE_ADF_LOAD_SAVE),
+				Tango.TANGO_INTENT_ACTIVITYCODE);
+
+		mSensorHandler = new SensorHandler(this, rootView);
+		mTangoHandler = new TangoHandler(this, rootView);
 	}
+
 
 	@Override
 	protected void onResume() {
@@ -54,16 +64,12 @@ public class ExaminatorActivity extends AppCompatActivity{
 		mSensorHandler.onResume();
 	}
 
-
-
 	@Override
 	protected void onPause() {
 		super.onPause();
 		mTangoHandler.onPause();
 		mSensorHandler.onPause();
 	}
-
-
 
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
@@ -78,12 +84,27 @@ public class ExaminatorActivity extends AppCompatActivity{
 			case R.id.action_settings:
 				return true;
 			case R.id.action_export_adf:
-				// TODO export ADF
+				mADFaction = ADFaction.export;
+				new SelectADFDialog().show(getFragmentManager(),"selectADF");
 				return true;
 			case R.id.action_load_adf:
-				// TODO load ADF
+				mADFaction = ADFaction.load;
+				new SelectADFDialog().show(getFragmentManager(),"selectADF");
 				return true;
 		}
 		return super.onOptionsItemSelected(item);
+	}
+
+	@Override
+	public void onADFSelected(String uuid) {
+		if(ADFaction.undef.equals(mADFaction)){
+			Log.e(TAG,"Action should not be undefined");
+			return;
+		} else if(ADFaction.export.equals(mADFaction)){
+			mTangoHandler.exportADF(uuid);
+		} else if(ADFaction.load.equals(mADFaction)){
+			mTangoHandler.loadADF(uuid);
+		}
+		mADFaction = ADFaction.undef;
 	}
 }

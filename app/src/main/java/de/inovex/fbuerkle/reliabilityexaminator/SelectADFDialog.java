@@ -1,8 +1,8 @@
 package de.inovex.fbuerkle.reliabilityexaminator;
 
-import android.app.Activity;
 import android.app.Dialog;
 import android.app.DialogFragment;
+import android.content.Context;
 import android.os.Bundle;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.LinearLayoutManager;
@@ -11,6 +11,8 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 
+import com.google.atap.tangoservice.Tango;
+
 /**
  * Created by felix on 04/04/16.
  */
@@ -18,6 +20,8 @@ public class SelectADFDialog extends DialogFragment implements ADFAdapter.ViewHo
 
 	private static final String TAG = "SelectADFDialog";
 	private ADFSelectListener mListener;
+	private Context mContext;
+	private Tango tango;
 
 	public interface ADFSelectListener {
 		public void onADFSelected(String uuid);
@@ -30,13 +34,13 @@ public class SelectADFDialog extends DialogFragment implements ADFAdapter.ViewHo
 	}
 
 	@Override
-	public void onAttach(Activity activity) {
-		super.onAttach(activity);
-
+	public void onAttach(Context context) {
+		mContext = context;
+		super.onAttach(context);
 		try {
-			mListener = (ADFSelectListener) activity;
+			mListener = (ADFSelectListener) context;
 		} catch (ClassCastException e){
-			Log.d(TAG, activity.toString() + "must implement ADFSelectListener");
+			Log.d(TAG, context.toString() + "must implement ADFSelectListener");
 		}
 	}
 
@@ -48,9 +52,11 @@ public class SelectADFDialog extends DialogFragment implements ADFAdapter.ViewHo
 		LayoutInflater inflater = getActivity().getLayoutInflater();
 		View view = inflater.inflate(R.layout.adf_list,null);
 
-		ADFDataSource source = new ADFDataSource(getActivity());
+		ADFDataSource source = new ADFDataSource(mContext);
 		String[] ids = source.getFullUUIDList();
 		String[] names = source.getUUIDNames();
+//		String[] ids = new String[0];
+//		String[] names = new String[0];
 		RecyclerView rv = (RecyclerView) view.findViewById(R.id.recyclerView);
 		rv.setHasFixedSize(true);
 		rv.setLayoutManager(new LinearLayoutManager(getActivity()));
