@@ -1,10 +1,5 @@
 package de.inovex.fbuerkle.reliabilityexaminator;
 
-import android.content.Context;
-import android.hardware.Sensor;
-import android.hardware.SensorEvent;
-import android.hardware.SensorEventListener;
-import android.hardware.SensorManager;
 import android.opengl.GLSurfaceView;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
@@ -27,13 +22,12 @@ import com.google.atap.tangoservice.TangoPointCloudData;
 import com.google.atap.tangoservice.TangoPoseData;
 import com.google.atap.tangoservice.TangoXyzIjData;
 
-import java.text.DecimalFormat;
 import java.util.ArrayList;
-import java.util.LinkedList;
-import java.util.List;
 import java.util.concurrent.atomic.AtomicBoolean;
 
-public class MainActivity extends AppCompatActivity implements SensorEventListener {
+import de.inovex.fbuerkle.reliabilityexaminator.Sensors.PitchMeasurment;
+
+public class MainActivity extends AppCompatActivity{
 
 	private static final String TAG = MainActivity.class.getSimpleName();
 
@@ -51,15 +45,7 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
 	private int mTopConnectedTextureIDGlThread = INVALID_TEXTURE_ID;
 	private int mBottomConnectedTextureIDGlThread = INVALID_TEXTURE_ID;
 
-	private SensorManager mSensorManager;
-	private Sensor mAccelerationSensor;
-	private Sensor mMagnetometer;
-	private final float[] mAccelerometerReading = new float[3];
-	private final float[] mMagnetometerReading = new float[3];
-	private final float[] mRotationMatrix = new float[9];
-	private final float[] mOrientationAngles = new float[3];
-	private TextView tvPitchValue;
-	private List<Double> angleBuffer = new LinkedList<>();
+	private PitchMeasurment mPitchMeasurment;
 
 
 	@Override
@@ -81,11 +67,8 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
 						.setAction("Action", null).show();
 			}
 		});
-
-		mSensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
-		mAccelerationSensor = mSensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
-		mMagnetometer = mSensorManager.getDefaultSensor(Sensor.TYPE_MAGNETIC_FIELD);
-		tvPitchValue = (TextView) findViewById(R.id.tv_pitch_value);
+		TextView textView = (TextView) findViewById(R.id.tv_pitch_value);
+		mPitchMeasurment = new PitchMeasurment(this,textView);
 	}
 
 	@Override
@@ -111,8 +94,7 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
 			}
 		});
 
-		mSensorManager.registerListener(this,mAccelerationSensor,SensorManager.SENSOR_DELAY_NORMAL);
-		mSensorManager.registerListener(this,mMagnetometer,SensorManager.SENSOR_DELAY_NORMAL);
+	mPitchMeasurment.registerListeners();
 	}
 
 	private TangoConfig setupTangoConfig(Tango tango) {
@@ -140,7 +122,7 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
 				Log.e(TAG, e.getMessage());
 			}
 		}
-		mSensorManager.unregisterListener(this);
+		mPitchMeasurment.unregisterListeners();
 	}
 
 	private void startupTango() {
@@ -270,38 +252,5 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
 		return super.onOptionsItemSelected(item);
 	}
 
-	@Override
-	public void onSensorChanged(SensorEvent sensorEvent) {
-		if(sensorEvent.sensor.getType() == Sensor.TYPE_ACCELEROMETER){
-			System.arraycopy(sensorEvent.values,0,mAccelerometerReading,0,mAccelerometerReading.length);
-		} else if(sensorEvent.sensor.getType() == Sensor.TYPE_MAGNETIC_FIELD){
-			System.arraycopy(sensorEvent.values,0,mMagnetometerReading,0,mMagnetometerReading.length);
-		}
-		updateOrientationAngles();
-	}
 
-	@Override
-	public void onAccuracyChanged(Sensor sensor, int i) {
-
-	}
-
-	public void updateOrientationAngles(){
-		mSensorManager.getRotationMatrix(mRotationMatrix,null,mAccelerometerReading,mMagnetometerReading);
-		mSensorManager.getOrientation(mRotationMatrix,mOrientationAngles);
-		double angle = mOrientationAngles[1] * -180 / Math.PI;
-		angleBuffer.add(angle);
-		if(angleBuffer.size() > 10){
-			angleBuffer.remove(0);
-		}
-		double sum = 0.0;
-		for(double d : angleBuffer){
-			sum += d;
-		}
-		DecimalFormat format = new DecimalFormat("0.0");
-		tvPitchValue.setText(format.format(sum/angleBuffer.size()) + "°");
-	}
-
-	public float getPitch(){
-		return mOrientationAngles[1];
-	}
 }
