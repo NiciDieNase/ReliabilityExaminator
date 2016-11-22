@@ -38,17 +38,104 @@
         android:layout_height="wrap_content"
         android:id="@+id/tv_pitch_label"
         android:layout_marginTop="16dp"
-        android:layout_marginStart="16dp"
         app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintTop_toTopOf="parent"/>
+        app:layout_constraintTop_toTopOf="parent"
+        android:layout_marginStart="16dp"/>
 
     <TextView
         android:text="0°"
         android:layout_width="334dp"
         android:layout_height="wrap_content"
         android:id="@+id/tv_pitch_value"
-        android:layout_marginStart="16dp"
-        app:layout_constraintLeft_toRightOf="@+id/tv_pitch_label"
-        app:layout_constraintTop_toTopOf="@+id/tv_pitch_label"/>
+        tools:layout_editor_absoluteY="16dp"
+        tools:layout_editor_absoluteX="171dp"/>
+
+    <TextView
+        android:text="ADF loaded:"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/tv_adf_status_label"
+        tools:layout_editor_absoluteY="41dp"
+        app:layout_constraintLeft_toLeftOf="@+id/tv_pitch_label"/>
+
+    <TextView
+        android:text="No"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/tv_adf_status_value"
+        android:layout_marginTop="8dp"
+        app:layout_constraintTop_toBottomOf="@+id/tv_pitch_value"
+        app:layout_constraintLeft_toLeftOf="@+id/tv_pitch_value"/>
+
+    <TextView
+        android:text="ADF Name:"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/tv_adf_name_label"
+        tools:layout_editor_absoluteY="66dp"
+        app:layout_constraintLeft_toLeftOf="@+id/tv_adf_status_label"/>
+
+    <TextView
+        android:text="-                        "
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/tv_adf_name_value"
+        android:layout_marginTop="8dp"
+        app:layout_constraintTop_toBottomOf="@+id/tv_adf_status_value"
+        app:layout_constraintLeft_toLeftOf="@+id/tv_adf_status_value"/>
+
+    <TextView
+        android:text="ADF ID:"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/tv_adf_id_label"
+        android:layout_marginTop="8dp"
+        app:layout_constraintTop_toBottomOf="@+id/tv_adf_name_label"
+        app:layout_constraintLeft_toLeftOf="@+id/tv_adf_name_label"
+        />
+
+    <TextView
+        android:text="0000000000000"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/textView6"
+        app:layout_constraintLeft_toLeftOf="@+id/tv_adf_name_value"
+        app:layout_constraintTop_toBottomOf="@+id/tv_adf_name_value"
+        android:layout_marginTop="8dp"/>
+
+    <TextView
+        android:text="Last ADF Location:"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/tv_adf_lastlocated_label"
+        app:layout_constraintTop_toBottomOf="@+id/tv_adf_located_label"
+        app:layout_constraintLeft_toLeftOf="@+id/tv_adf_id_label"
+        android:layout_marginTop="8dp"/>
+
+    <TextView
+        android:text="-1 sec"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/tv_adf_lastlocated_value"
+        app:layout_constraintLeft_toLeftOf="@+id/tv_adf_located_value"
+        android:layout_marginTop="8dp"
+        app:layout_constraintTop_toBottomOf="@+id/tv_adf_located_value"/>
+
+    <TextView
+        android:text="ADF located:"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/tv_adf_located_label"
+        app:layout_constraintLeft_toLeftOf="@+id/tv_adf_id_label"
+        android:layout_marginTop="8dp"
+        app:layout_constraintTop_toBottomOf="@+id/tv_adf_id_label"/>
+
+    <TextView
+        android:text="No"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/tv_adf_located_value"
+        tools:layout_editor_absoluteY="116dp"
+        tools:layout_editor_absoluteX="171dp"/>
 
 </android.support.constraint.ConstraintLayout>

@@ -1,4 +1,4 @@
-package de.inovex.fbuerkle.reliabilityexaminator.Sensors;
+package de.inovex.fbuerkle.reliabilityexaminator.Handler;
 
 import android.content.Context;
 import android.opengl.GLSurfaceView;

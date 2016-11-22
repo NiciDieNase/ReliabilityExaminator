@@ -1,4 +1,4 @@
-package de.inovex.fbuerkle.reliabilityexaminator.Sensors;
+package de.inovex.fbuerkle.reliabilityexaminator.Handler;
 
 import android.content.Context;
 import android.hardware.Sensor;
@@ -16,8 +16,8 @@ import java.util.List;
  * Created by felix on 22/11/16.
  */
 
-public class PitchMeasurment implements SensorEventListener{
-	private static final String TAG = PitchMeasurment.class.getSimpleName();
+public class SensorHandler implements SensorEventListener{
+	private static final String TAG = SensorHandler.class.getSimpleName();
 	private final Context mContext;
 
 	private SensorManager mSensorManager;
@@ -30,7 +30,7 @@ public class PitchMeasurment implements SensorEventListener{
 	private TextView tvPitchValue;
 	private List<Double> angleBuffer = new LinkedList<>();
 
-	public PitchMeasurment(Context context, TextView displayView){
+	public SensorHandler(Context context, TextView displayView){
 		mContext = context;
 		mSensorManager = (SensorManager) mContext.getSystemService(Context.SENSOR_SERVICE);
 		mAccelerationSensor = mSensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);

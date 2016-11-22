@@ -11,14 +11,14 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
 
-import de.inovex.fbuerkle.reliabilityexaminator.Sensors.PitchMeasurment;
-import de.inovex.fbuerkle.reliabilityexaminator.Sensors.TangoHandler;
+import de.inovex.fbuerkle.reliabilityexaminator.Handler.SensorHandler;
+import de.inovex.fbuerkle.reliabilityexaminator.Handler.TangoHandler;
 
 public class MainActivity extends AppCompatActivity{
 
 	private static final String TAG = MainActivity.class.getSimpleName();
 
-	private PitchMeasurment mPitchMeasurment;
+	private SensorHandler mSensorHandler;
 	private TangoHandler mTangoHandler;
 
 
@@ -42,7 +42,7 @@ public class MainActivity extends AppCompatActivity{
 			}
 		});
 
-		mPitchMeasurment = new PitchMeasurment(this,textView);
+		mSensorHandler = new SensorHandler(this,textView);
 		mTangoHandler = new TangoHandler(this, mTopPreview, mBottomPreview);
 	}
 
@@ -50,7 +50,7 @@ public class MainActivity extends AppCompatActivity{
 	protected void onResume() {
 		super.onResume();
 		mTangoHandler.onResume();
-		mPitchMeasurment.onResume();
+		mSensorHandler.onResume();
 	}
 
 
@@ -59,7 +59,7 @@ public class MainActivity extends AppCompatActivity{
 	protected void onPause() {
 		super.onPause();
 		mTangoHandler.onPause();
-		mPitchMeasurment.onPause();
+		mSensorHandler.onPause();
 	}
 
 
