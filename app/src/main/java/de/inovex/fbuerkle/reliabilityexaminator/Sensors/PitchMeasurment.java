@@ -69,12 +69,12 @@ public class PitchMeasurment implements SensorEventListener{
 		tvPitchValue.setText(format.format(sum/angleBuffer.size()) + "°");
 	}
 
-	public void registerListeners(){
+	public void onResume(){
 		mSensorManager.registerListener(this,mAccelerationSensor,SensorManager.SENSOR_DELAY_NORMAL);
 		mSensorManager.registerListener(this,mMagnetometer,SensorManager.SENSOR_DELAY_NORMAL);
 	}
 
-	public void unregisterListeners(){
+	public void onPause(){
 		mSensorManager.unregisterListener(this);
 	}
 }
