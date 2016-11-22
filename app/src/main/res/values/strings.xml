@@ -1,4 +1,20 @@
 <resources>
     <string name="app_name">ReliabilityExaminator</string>
     <string name="action_settings">Settings</string>
+    <string name="failed_measurement">Failed Measurment</string>
+    <string name="failed_permissions">Failed Permissions</string>
+    <string name="tango_error">"Tango Exception! Try again!"</string>
+    <string name="no_uuid_tango_error">"No ADF with that UUID!"</string>
+    <string name="no_adfs_tango_error">No ADF UUIDs</string>
+    <string name="device_pitch">Device Pitch:</string>
+    <string name="pitch_default_string">0°</string>
+    <string name="adf_loaded">ADF loaded:</string>
+    <string name="no">No</string>
+    <string name="adf_name">ADF Name:</string>
+    <string name="adf_name_default">-</string>
+    <string name="adf_id">ADF ID:</string>
+    <string name="adf_id_default">0000000000000</string>
+    <string name="last_adf_location">Last ADF Location:</string>
+    <string name="last_time_default">-1 sec</string>
+    <string name="adf_located">ADF located:</string>
 </resources>

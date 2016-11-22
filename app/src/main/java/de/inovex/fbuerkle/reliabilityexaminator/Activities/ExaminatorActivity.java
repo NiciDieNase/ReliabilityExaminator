@@ -1,4 +1,4 @@
-package de.inovex.fbuerkle.reliabilityexaminator;
+package de.inovex.fbuerkle.reliabilityexaminator.Activities;
 
 import android.opengl.GLSurfaceView;
 import android.os.Bundle;
@@ -13,10 +13,11 @@ import android.widget.TextView;
 
 import de.inovex.fbuerkle.reliabilityexaminator.Handler.SensorHandler;
 import de.inovex.fbuerkle.reliabilityexaminator.Handler.TangoHandler;
+import de.inovex.fbuerkle.reliabilityexaminator.R;
 
-public class MainActivity extends AppCompatActivity{
+public class ExaminatorActivity extends AppCompatActivity{
 
-	private static final String TAG = MainActivity.class.getSimpleName();
+	private static final String TAG = ExaminatorActivity.class.getSimpleName();
 
 	private SensorHandler mSensorHandler;
 	private TangoHandler mTangoHandler;

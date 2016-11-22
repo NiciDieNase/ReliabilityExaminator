@@ -7,7 +7,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     app:layout_behavior="@string/appbar_scrolling_view_behavior"
-    tools:context="de.inovex.fbuerkle.reliabilityexaminator.MainActivity"
+    tools:context="de.inovex.fbuerkle.reliabilityexaminator.Activities.ExaminatorActivity"
     tools:showIn="@layout/activity_main">
 
     <android.opengl.GLSurfaceView
@@ -33,7 +33,7 @@
         android:layout_width="391dp"/>
 
     <TextView
-        android:text="Device Pitch:"
+        android:text="@string/device_pitch"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/tv_pitch_label"
@@ -43,23 +43,25 @@
         android:layout_marginStart="16dp"/>
 
     <TextView
-        android:text="0°"
+        android:text="@string/pitch_default_string"
         android:layout_width="334dp"
         android:layout_height="wrap_content"
         android:id="@+id/tv_pitch_value"
-        tools:layout_editor_absoluteY="16dp"
-        tools:layout_editor_absoluteX="171dp"/>
+        android:layout_marginStart="8dp"
+        app:layout_constraintLeft_toRightOf="@+id/tv_adf_lastlocated_label"
+        app:layout_constraintTop_toTopOf="@+id/tv_pitch_label"/>
 
     <TextView
-        android:text="ADF loaded:"
+        android:text="@string/adf_loaded"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/tv_adf_status_label"
-        tools:layout_editor_absoluteY="41dp"
-        app:layout_constraintLeft_toLeftOf="@+id/tv_pitch_label"/>
+        app:layout_constraintLeft_toLeftOf="@+id/tv_pitch_label"
+        android:layout_marginTop="8dp"
+        app:layout_constraintTop_toBottomOf="@+id/tv_pitch_label"/>
 
     <TextView
-        android:text="No"
+        android:text="@string/no"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/tv_adf_status_value"
@@ -68,15 +70,16 @@
         app:layout_constraintLeft_toLeftOf="@+id/tv_pitch_value"/>
 
     <TextView
-        android:text="ADF Name:"
+        android:text="@string/adf_name"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/tv_adf_name_label"
-        tools:layout_editor_absoluteY="66dp"
-        app:layout_constraintLeft_toLeftOf="@+id/tv_adf_status_label"/>
+        app:layout_constraintLeft_toLeftOf="@+id/tv_adf_status_label"
+        android:layout_marginTop="8dp"
+        app:layout_constraintTop_toBottomOf="@+id/tv_adf_status_label"/>
 
     <TextView
-        android:text="-                        "
+        android:text="@string/adf_name_default"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/tv_adf_name_value"
@@ -85,7 +88,7 @@
         app:layout_constraintLeft_toLeftOf="@+id/tv_adf_status_value"/>
 
     <TextView
-        android:text="ADF ID:"
+        android:text="@string/adf_id"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/tv_adf_id_label"
@@ -95,7 +98,7 @@
         />
 
     <TextView
-        android:text="0000000000000"
+        android:text="@string/adf_id_default"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/textView6"
@@ -104,7 +107,7 @@
         android:layout_marginTop="8dp"/>
 
     <TextView
-        android:text="Last ADF Location:"
+        android:text="@string/last_adf_location"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/tv_adf_lastlocated_label"
@@ -113,7 +116,7 @@
         android:layout_marginTop="8dp"/>
 
     <TextView
-        android:text="-1 sec"
+        android:text="@string/last_time_default"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/tv_adf_lastlocated_value"
@@ -122,7 +125,7 @@
         app:layout_constraintTop_toBottomOf="@+id/tv_adf_located_value"/>
 
     <TextView
-        android:text="ADF located:"
+        android:text="@string/adf_located"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/tv_adf_located_label"
@@ -131,11 +134,12 @@
         app:layout_constraintTop_toBottomOf="@+id/tv_adf_id_label"/>
 
     <TextView
-        android:text="No"
+        android:text="@string/no"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/tv_adf_located_value"
-        tools:layout_editor_absoluteY="116dp"
-        tools:layout_editor_absoluteX="171dp"/>
+        android:layout_marginTop="8dp"
+        app:layout_constraintTop_toBottomOf="@+id/textView6"
+        app:layout_constraintLeft_toLeftOf="@+id/textView6"/>
 
 </android.support.constraint.ConstraintLayout>
