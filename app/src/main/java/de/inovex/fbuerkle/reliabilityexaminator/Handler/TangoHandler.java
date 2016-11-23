@@ -31,7 +31,13 @@ public class TangoHandler {
 	private static final String TAG = TangoHandler.class.getSimpleName();
 	private final Context mContext;
 	private final CameraHandler mCameraHandler;
+	private ADFHandler mADFHandler;
 	private final TangoUx mTangoUx;
+
+	public String getUuid() {
+		return uuid;
+	}
+
 	private final String uuid;
 
 	private boolean mIsConnected = false;
@@ -125,11 +131,16 @@ public class TangoHandler {
 					}
 					mIsConnected = true;
 					mCameraHandler.connectCamera();
+					startADFHandler();
 					Log.d(TAG, "Resumed, Tango started");
 				}
 			}
 		};
 		mTango =  new Tango(mContext,onTangoReady);
+	}
+
+	private void startADFHandler() {
+		mADFHandler = new ADFHandler(mContext,this);
 	}
 
 	public void onPause() {
