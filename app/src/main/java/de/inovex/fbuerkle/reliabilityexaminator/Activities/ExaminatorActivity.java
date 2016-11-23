@@ -1,5 +1,6 @@
 package de.inovex.fbuerkle.reliabilityexaminator.Activities;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
@@ -53,8 +54,10 @@ public class ExaminatorActivity extends AppCompatActivity implements SelectADFDi
 				Tango.getRequestPermissionIntent(Tango.PERMISSIONTYPE_ADF_LOAD_SAVE),
 				Tango.TANGO_INTENT_ACTIVITYCODE);
 
+		String uuid = getIntent().getStringExtra("UUID");
+
 		mSensorHandler = new SensorHandler(this, rootView);
-		mTangoHandler = new TangoHandler(this, rootView);
+		mTangoHandler = new TangoHandler(this, rootView, uuid);
 	}
 
 
@@ -86,11 +89,11 @@ public class ExaminatorActivity extends AppCompatActivity implements SelectADFDi
 				return true;
 			case R.id.action_export_adf:
 				mADFaction = ADFaction.export;
-				new SelectADFDialog().show(getFragmentManager(),"selectADF");
+				new SelectADFDialog().setmContext(this).show(getFragmentManager(),"selectADF");
 				return true;
 			case R.id.action_load_adf:
 				mADFaction = ADFaction.load;
-				new SelectADFDialog().show(getFragmentManager(),"selectADF");
+				new SelectADFDialog().setmContext(this).show(getFragmentManager(),"selectADF");
 				return true;
 		}
 		return super.onOptionsItemSelected(item);
@@ -104,7 +107,10 @@ public class ExaminatorActivity extends AppCompatActivity implements SelectADFDi
 		} else if(ADFaction.export.equals(mADFaction)){
 			mTangoHandler.exportADF(uuid);
 		} else if(ADFaction.load.equals(mADFaction)){
-			mTangoHandler.loadADF(uuid);
+			Intent i = new Intent(this, ExaminatorActivity.class);
+			i.putExtra("uuid",uuid);
+			startActivity(i);
+			this.finish();
 		}
 		mADFaction = ADFaction.undef;
 	}

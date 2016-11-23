@@ -25,6 +25,7 @@ public class TangoHandler {
 	private final CameraHandler mCameraHandler;
 	private final ADFHandler mADFHandler;
 	private final TangoUx mTangoUx;
+	private final String uuid;
 
 	private boolean mIsConnected = false;
 	private Tango mTango;
@@ -34,8 +35,9 @@ public class TangoHandler {
 	@BindView(R.id.top_preview) GLSurfaceView rgbView;
 	@BindView(R.id.bottom_preview) GLSurfaceView fisheyeView;
 
-	public TangoHandler(Context context, ViewGroup view) {
+	public TangoHandler(Context context, ViewGroup view, String uuid) {
 		this.mContext = context;
+		this.uuid = uuid;
 		ButterKnife.bind(this, view);
 
 		mTangoUx = new TangoUx(mContext);
@@ -45,16 +47,12 @@ public class TangoHandler {
 	}
 
 	private TangoConfig setupTangoConfig(Tango tango) {
-		return setupTangoConfig(tango,"");
-	};
-
-	private TangoConfig setupTangoConfig(Tango tango, String uuid) {
 		TangoConfig config = tango.getConfig(TangoConfig.CONFIG_TYPE_DEFAULT);
 		config.putBoolean(TangoConfig.KEY_BOOLEAN_LOWLATENCYIMUINTEGRATION, true);
 		config.putBoolean(TangoConfig.KEY_BOOLEAN_COLORCAMERA, true);
 		config.putBoolean(TangoConfig.KEY_BOOLEAN_MOTIONTRACKING, true);
 		config.putBoolean(TangoConfig.KEY_BOOLEAN_MOTIONTRACKING,true);
-		if(uuid != ""){
+		if(this.uuid != null && this.uuid != ""){
 			config.putString(TangoConfig.KEY_STRING_AREADESCRIPTION,uuid);
 		}
 		return config;
@@ -81,7 +79,6 @@ public class TangoHandler {
 
 	public void onPause() {
 		mCameraHandler.onPause();
-
 		synchronized (mContext){
 			try{
 				mCameraHandler.disconnectCamera();
@@ -106,15 +103,5 @@ public class TangoHandler {
 		Log.d(TAG,"Exporting ADF " + uuid);
 		String exportDir = "/storage/emulated/legacy/TangoADFs/";
 		mTango.exportAreaDescriptionFile(uuid,exportDir);
-	}
-
-	public void loadADF(String uuid) {
-		// TODO load ADF
-		synchronized (mContext){
-			mCameraHandler.onPause();
-			mTango.disconnect();
-			mTango.connect(setupTangoConfig(mTango,uuid));
-			mCameraHandler.onResume();
-		}
 	}
 }
