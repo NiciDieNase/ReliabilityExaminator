@@ -103,8 +103,9 @@ public class TangoHandler {
 	}
 
 	public void exportADF(String uuid) {
-		// TODO export ADF
 		Log.d(TAG,"Exporting ADF " + uuid);
+		String exportDir = "/storage/emulated/legacy/TangoADFs/";
+		mTango.exportAreaDescriptionFile(uuid,exportDir);
 	}
 
 	public void loadADF(String uuid) {

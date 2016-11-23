@@ -11,8 +11,6 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 
-import com.google.atap.tangoservice.Tango;
-
 /**
  * Created by felix on 04/04/16.
  */
@@ -21,7 +19,6 @@ public class SelectADFDialog extends DialogFragment implements ADFAdapter.ViewHo
 	private static final String TAG = "SelectADFDialog";
 	private ADFSelectListener mListener;
 	private Context mContext;
-	private Tango tango;
 
 	public interface ADFSelectListener {
 		public void onADFSelected(String uuid);
@@ -31,17 +28,6 @@ public class SelectADFDialog extends DialogFragment implements ADFAdapter.ViewHo
 	public void onADFSelect(String uuid) {
 		mListener.onADFSelected(uuid);
 		this.dismiss();
-	}
-
-	@Override
-	public void onAttach(Context context) {
-		mContext = context;
-		super.onAttach(context);
-		try {
-			mListener = (ADFSelectListener) context;
-		} catch (ClassCastException e){
-			Log.d(TAG, context.toString() + "must implement ADFSelectListener");
-		}
 	}
 
 	@Override
@@ -65,5 +51,15 @@ public class SelectADFDialog extends DialogFragment implements ADFAdapter.ViewHo
 		builder.setView(view);
 		builder.setCancelable(true);
 		return builder.create();
+	}
+
+	public SelectADFDialog setmContext(Context mContext) {
+		this.mContext = mContext;
+		try {
+			mListener = (ADFSelectListener) mContext;
+		} catch (ClassCastException e){
+			Log.d(TAG, mContext.toString() + "must implement ADFSelectListener");
+		}
+		return this;
 	}
 }
