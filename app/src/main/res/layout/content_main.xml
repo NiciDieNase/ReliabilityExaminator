@@ -79,7 +79,7 @@
         app:layout_constraintTop_toBottomOf="@+id/tv_adf_status_label"/>
 
     <TextView
-        android:text="@string/adf_name_default"
+        android:text="@string/empty_value"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/tv_adf_name_value"
@@ -141,5 +141,23 @@
         android:layout_marginTop="8dp"
         app:layout_constraintTop_toBottomOf="@+id/tv_adf_id_value"
         app:layout_constraintLeft_toLeftOf="@+id/tv_adf_id_value"/>
+
+    <TextView
+        android:text="@string/confidence"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/tv_adf_confidence_label"
+        app:layout_constraintTop_toBottomOf="@+id/tv_adf_lastlocated_label"
+        app:layout_constraintLeft_toLeftOf="@+id/tv_adf_lastlocated_label"
+        android:layout_marginTop="8dp"/>
+
+    <TextView
+        android:text="@string/empty_value"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/tv_adf_confidence_value"
+        app:layout_constraintLeft_toLeftOf="@+id/tv_adf_lastlocated_value"
+        android:layout_marginTop="8dp"
+        app:layout_constraintTop_toBottomOf="@+id/tv_adf_lastlocated_value"/>
 
 </android.support.constraint.ConstraintLayout>

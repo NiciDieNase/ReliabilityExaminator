@@ -11,10 +11,12 @@
     <string name="adf_loaded">ADF loaded:</string>
     <string name="no">No</string>
     <string name="adf_name">ADF Name:</string>
-    <string name="adf_name_default">-</string>
+    <string name="empty_value">-</string>
     <string name="adf_id">ADF ID:</string>
     <string name="adf_id_default">0000000000000</string>
     <string name="last_adf_location">Last ADF Location:</string>
     <string name="last_time_default">-1 sec</string>
     <string name="adf_located">ADF located:</string>
+    <string name="yes">Yes</string>
+    <string name="confidence">Confidence:</string>
 </resources>

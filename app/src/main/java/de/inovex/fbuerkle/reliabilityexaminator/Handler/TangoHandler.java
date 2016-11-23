@@ -9,7 +9,15 @@ import com.google.atap.tango.ux.TangoUx;
 import com.google.atap.tango.ux.TangoUxLayout;
 import com.google.atap.tangoservice.Tango;
 import com.google.atap.tangoservice.TangoConfig;
+import com.google.atap.tangoservice.TangoCoordinateFramePair;
 import com.google.atap.tangoservice.TangoErrorException;
+import com.google.atap.tangoservice.TangoEvent;
+import com.google.atap.tangoservice.TangoOutOfDateException;
+import com.google.atap.tangoservice.TangoPointCloudData;
+import com.google.atap.tangoservice.TangoPoseData;
+import com.google.atap.tangoservice.TangoXyzIjData;
+
+import java.util.ArrayList;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -23,7 +31,6 @@ public class TangoHandler {
 	private static final String TAG = TangoHandler.class.getSimpleName();
 	private final Context mContext;
 	private final CameraHandler mCameraHandler;
-	private final ADFHandler mADFHandler;
 	private final TangoUx mTangoUx;
 	private final String uuid;
 
@@ -43,7 +50,45 @@ public class TangoHandler {
 		mTangoUx = new TangoUx(mContext);
 		mTangoUx.setLayout(mTangoUxLayout);
 		mCameraHandler = new CameraHandler(mContext,this,rgbView,fisheyeView);
-		mADFHandler = new ADFHandler(mContext,this);
+	}
+
+	private void setupTangoUX() {
+		Tango.OnTangoUpdateListener updateListener = new Tango.OnTangoUpdateListener() {
+
+			@Override
+			public void onPoseAvailable(TangoPoseData tangoPoseData) {
+				if (null != mTangoUx) {
+					mTangoUx.updatePoseStatus(tangoPoseData.statusCode);
+				}
+			}
+
+			@Override
+			public void onXyzIjAvailable(TangoXyzIjData tangoXyzIjData) {
+				if (mTangoUx != null) {
+					mTangoUx.updateXyzCount(tangoXyzIjData.xyzCount);
+				}
+			}
+
+			@Override
+			public void onFrameAvailable(int i) {
+
+			}
+
+			@Override
+			public void onTangoEvent(TangoEvent tangoEvent) {
+				if (null != mTangoUx) {
+					mTangoUx.updateTangoEvent(tangoEvent);
+				}
+			}
+
+			@Override
+			public void onPointCloudAvailable(TangoPointCloudData tangoPointCloudData) {
+
+			}
+		};
+		ArrayList<TangoCoordinateFramePair> framePairs = new ArrayList<TangoCoordinateFramePair>();
+		mTango.connectListener(framePairs,updateListener);
+
 	}
 
 	private TangoConfig setupTangoConfig(Tango tango) {
@@ -67,9 +112,19 @@ public class TangoHandler {
 			public void run() {
 				synchronized (mContext) {
 					mConfig = setupTangoConfig(mTango);
-					mTango.connect(mConfig);
-					mCameraHandler.connectCamera();
+					setupTangoUX();
+					TangoUx.StartParams params = new TangoUx.StartParams();
+					params.showConnectionScreen = false;
+					mTangoUx.start(params);
+					try {
+						mTango.connect(mConfig);
+					} catch (TangoOutOfDateException e){
+						if(null != mTangoUx){
+							mTangoUx.showTangoOutOfDate();
+						}
+					}
 					mIsConnected = true;
+					mCameraHandler.connectCamera();
 					Log.d(TAG, "Resumed, Tango started");
 				}
 			}
@@ -83,6 +138,7 @@ public class TangoHandler {
 			try{
 				mCameraHandler.disconnectCamera();
 				mTango.disconnect();
+				mTangoUx.stop();
 				mIsConnected = false;
 			} catch (TangoErrorException e){
 				Log.e(TAG, e.getMessage());
