@@ -65,8 +65,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/tv_adf_status_value"
-        android:layout_marginTop="8dp"
-        app:layout_constraintTop_toBottomOf="@+id/tv_pitch_value"
+        app:layout_constraintTop_toTopOf="@+id/tv_adf_status_label"
         app:layout_constraintLeft_toLeftOf="@+id/tv_pitch_value"/>
 
     <TextView
@@ -83,9 +82,8 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/tv_adf_name_value"
-        android:layout_marginTop="8dp"
-        app:layout_constraintTop_toBottomOf="@+id/tv_adf_status_value"
-        app:layout_constraintLeft_toLeftOf="@+id/tv_adf_status_value"/>
+        app:layout_constraintLeft_toLeftOf="@+id/tv_adf_status_value"
+        app:layout_constraintTop_toTopOf="@+id/tv_adf_name_label"/>
 
     <TextView
         android:text="@string/adf_id"
@@ -102,9 +100,8 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/tv_adf_id_value"
-        app:layout_constraintLeft_toLeftOf="@+id/tv_adf_name_value"
-        app:layout_constraintTop_toBottomOf="@+id/tv_adf_name_value"
-        android:layout_marginTop="8dp"/>
+        app:layout_constraintTop_toTopOf="@+id/tv_adf_id_label"
+        app:layout_constraintLeft_toLeftOf="@+id/tv_adf_name_value"/>
 
     <TextView
         android:text="@string/last_adf_location"
@@ -120,9 +117,8 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/tv_adf_lastlocated_value"
-        app:layout_constraintLeft_toLeftOf="@+id/tv_adf_located_value"
-        android:layout_marginTop="8dp"
-        app:layout_constraintTop_toBottomOf="@+id/tv_adf_located_value"/>
+        app:layout_constraintTop_toTopOf="@+id/tv_adf_lastlocated_label"
+        app:layout_constraintLeft_toLeftOf="@+id/tv_adf_located_value"/>
 
     <TextView
         android:text="@string/adf_located"
@@ -138,9 +134,8 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/tv_adf_located_value"
-        android:layout_marginTop="8dp"
-        app:layout_constraintTop_toBottomOf="@+id/tv_adf_id_value"
-        app:layout_constraintLeft_toLeftOf="@+id/tv_adf_id_value"/>
+        app:layout_constraintLeft_toLeftOf="@+id/tv_adf_id_value"
+        app:layout_constraintTop_toTopOf="@+id/tv_adf_located_label"/>
 
     <TextView
         android:text="@string/confidence"
@@ -157,7 +152,6 @@
         android:layout_height="wrap_content"
         android:id="@+id/tv_adf_confidence_value"
         app:layout_constraintLeft_toLeftOf="@+id/tv_adf_lastlocated_value"
-        android:layout_marginTop="8dp"
-        app:layout_constraintTop_toBottomOf="@+id/tv_adf_lastlocated_value"/>
+        app:layout_constraintTop_toTopOf="@+id/tv_adf_confidence_label"/>
 
 </android.support.constraint.ConstraintLayout>

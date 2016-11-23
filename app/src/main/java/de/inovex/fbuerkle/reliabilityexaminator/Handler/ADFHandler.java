@@ -1,20 +1,16 @@
 package de.inovex.fbuerkle.reliabilityexaminator.Handler;
 
+import android.app.Activity;
 import android.content.Context;
 import android.util.Log;
+import android.view.ViewGroup;
 import android.widget.TextView;
 
-import com.google.atap.tangoservice.Tango;
 import com.google.atap.tangoservice.TangoAreaDescriptionMetaData;
-import com.google.atap.tangoservice.TangoCoordinateFramePair;
-import com.google.atap.tangoservice.TangoEvent;
-import com.google.atap.tangoservice.TangoPointCloudData;
 import com.google.atap.tangoservice.TangoPoseData;
-import com.google.atap.tangoservice.TangoXyzIjData;
-
-import java.util.ArrayList;
 
 import butterknife.BindView;
+import butterknife.ButterKnife;
 import de.inovex.fbuerkle.reliabilityexaminator.R;
 
 /**
@@ -34,53 +30,45 @@ public class ADFHandler {
 	@BindView(R.id.tv_adf_confidence_value) protected TextView confidence;
 	private double lastLocatedTime;
 
-	public ADFHandler(Context mContext, TangoHandler mTangoHandler) {
+	public ADFHandler(final Context mContext, final TangoHandler mTangoHandler, final ViewGroup rootView) {
 		this.mContext = mContext;
 		this.mTangoHandler = mTangoHandler;
 
-		String uuid = mTangoHandler.getUuid();
+		final String uuid = mTangoHandler.getUuid();
+		Log.d(TAG,uuid != null ? uuid : "No ADF");
 		if(uuid != null && uuid != ""){
-			adfStatus.setText(R.string.yes);
-			adfId.setText(uuid);
-			byte[] bytes = mTangoHandler.getTango()
-					.loadAreaDescriptionMetaData(uuid).get(TangoAreaDescriptionMetaData.KEY_NAME);
-			String name = bytes != null ? new String(bytes) : "<no_name_found>";
-			adfName.setText(name);
+			((Activity)mContext).runOnUiThread(new Runnable() {
+				@Override
+				public void run() {
+					ButterKnife.bind(ADFHandler.this,rootView);
+					adfStatus.setText(R.string.yes);
+					adfId.setText(uuid);
+					byte[] bytes = mTangoHandler.getTango()
+							.loadAreaDescriptionMetaData(uuid).get(TangoAreaDescriptionMetaData.KEY_NAME);
+					String name = bytes != null ? new String(bytes) : "<no_name_found>";
+					adfName.setText(name);
+				}
+			});
+
 		}
-		ArrayList<TangoCoordinateFramePair> tangoCoordinateFramePairs = new ArrayList<>();
-		TangoCoordinateFramePair pair = new TangoCoordinateFramePair();
-		pair.baseFrame = TangoPoseData.COORDINATE_FRAME_AREA_DESCRIPTION;
-		pair.targetFrame = TangoPoseData.COORDINATE_FRAME_DEVICE;
-		tangoCoordinateFramePairs.add(pair);
-		mTangoHandler.getTango().connectListener(tangoCoordinateFramePairs, new Tango.OnTangoUpdateListener() {
-			@Override
-			public void onPoseAvailable(TangoPoseData tangoPoseData) {
-				confidence.setText(tangoPoseData.confidence);
-				lastLocatedTime = tangoPoseData.timestamp;
-				lastLocated.setText(Double.toString(lastLocatedTime));
-			}
-
-			@Override
-			public void onXyzIjAvailable(TangoXyzIjData tangoXyzIjData) {
-
-			}
-
-			@Override
-			public void onFrameAvailable(int i) {
-
-			}
-
-			@Override
-			public void onTangoEvent(TangoEvent tangoEvent) {
-
-			}
-
-			@Override
-			public void onPointCloudAvailable(TangoPointCloudData tangoPointCloudData) {
-
-			}
-		});
 		Log.d(TAG,"ADF Handler Started");
+	}
+
+	public void onPoseAvailable(final TangoPoseData pose){
+		if(pose.baseFrame == TangoPoseData.COORDINATE_FRAME_AREA_DESCRIPTION
+				&& pose.targetFrame == TangoPoseData.COORDINATE_FRAME_START_OF_SERVICE){
+			((Activity)mContext).runOnUiThread(new Runnable() {
+				@Override
+				public void run() {
+					if(pose.statusCode == TangoPoseData.POSE_VALID){
+						located.setText(R.string.yes);
+					}
+					confidence.setText(Integer.toString(pose.confidence));
+					lastLocatedTime = pose.timestamp;
+					lastLocated.setText(Double.toString(lastLocatedTime));
+				}
+			});
+		}
 	}
 
 

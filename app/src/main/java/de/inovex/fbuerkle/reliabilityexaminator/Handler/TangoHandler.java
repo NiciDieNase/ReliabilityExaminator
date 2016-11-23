@@ -38,6 +38,7 @@ public class TangoHandler {
 		return uuid;
 	}
 
+	private ViewGroup rootView;
 	private final String uuid;
 
 	private boolean mIsConnected = false;
@@ -50,6 +51,7 @@ public class TangoHandler {
 
 	public TangoHandler(Context context, ViewGroup view, String uuid) {
 		this.mContext = context;
+		rootView = view;
 		this.uuid = uuid;
 		ButterKnife.bind(this, view);
 
@@ -58,7 +60,7 @@ public class TangoHandler {
 		mCameraHandler = new CameraHandler(mContext,this,rgbView,fisheyeView);
 	}
 
-	private void setupTangoUX() {
+	private void setupTangoListener() {
 		Tango.OnTangoUpdateListener updateListener = new Tango.OnTangoUpdateListener() {
 
 			@Override
@@ -66,6 +68,7 @@ public class TangoHandler {
 				if (null != mTangoUx) {
 					mTangoUx.updatePoseStatus(tangoPoseData.statusCode);
 				}
+				mADFHandler.onPoseAvailable(tangoPoseData);
 			}
 
 			@Override
@@ -77,7 +80,7 @@ public class TangoHandler {
 
 			@Override
 			public void onFrameAvailable(int i) {
-
+				mCameraHandler.onFrameAvailable(i);
 			}
 
 			@Override
@@ -93,6 +96,15 @@ public class TangoHandler {
 			}
 		};
 		ArrayList<TangoCoordinateFramePair> framePairs = new ArrayList<TangoCoordinateFramePair>();
+		framePairs.add(new TangoCoordinateFramePair(
+				TangoPoseData.COORDINATE_FRAME_START_OF_SERVICE,
+				TangoPoseData.COORDINATE_FRAME_DEVICE));
+		framePairs.add(new TangoCoordinateFramePair(
+				TangoPoseData.COORDINATE_FRAME_AREA_DESCRIPTION,
+				TangoPoseData.COORDINATE_FRAME_DEVICE));
+		framePairs.add(new TangoCoordinateFramePair(
+				TangoPoseData.COORDINATE_FRAME_AREA_DESCRIPTION,
+				TangoPoseData.COORDINATE_FRAME_START_OF_SERVICE));
 		mTango.connectListener(framePairs,updateListener);
 
 	}
@@ -118,7 +130,7 @@ public class TangoHandler {
 			public void run() {
 				synchronized (mContext) {
 					mConfig = setupTangoConfig(mTango);
-					setupTangoUX();
+					setupTangoListener();
 					TangoUx.StartParams params = new TangoUx.StartParams();
 					params.showConnectionScreen = false;
 					mTangoUx.start(params);
@@ -131,16 +143,12 @@ public class TangoHandler {
 					}
 					mIsConnected = true;
 					mCameraHandler.connectCamera();
-					startADFHandler();
+					mADFHandler = new ADFHandler(mContext,TangoHandler.this,rootView);
 					Log.d(TAG, "Resumed, Tango started");
 				}
 			}
 		};
 		mTango =  new Tango(mContext,onTangoReady);
-	}
-
-	private void startADFHandler() {
-		mADFHandler = new ADFHandler(mContext,this);
 	}
 
 	public void onPause() {

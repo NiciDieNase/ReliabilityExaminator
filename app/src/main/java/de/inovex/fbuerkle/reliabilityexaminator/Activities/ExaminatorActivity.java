@@ -22,6 +22,7 @@ import de.inovex.fbuerkle.reliabilityexaminator.SelectADFDialog;
 public class ExaminatorActivity extends AppCompatActivity implements SelectADFDialog.ADFSelectListener{
 
 	private static final String TAG = ExaminatorActivity.class.getSimpleName();
+	public static final String KEY_UUID = "uuid";
 
 	private SensorHandler mSensorHandler;
 	private TangoHandler mTangoHandler;
@@ -54,7 +55,11 @@ public class ExaminatorActivity extends AppCompatActivity implements SelectADFDi
 				Tango.getRequestPermissionIntent(Tango.PERMISSIONTYPE_ADF_LOAD_SAVE),
 				Tango.TANGO_INTENT_ACTIVITYCODE);
 
-		String uuid = getIntent().getStringExtra("UUID");
+		Bundle extras = getIntent().getExtras();
+		String uuid = "";
+		if(extras != null){
+			uuid = extras.getString(KEY_UUID,"");
+		}
 
 		mSensorHandler = new SensorHandler(this, rootView);
 		mTangoHandler = new TangoHandler(this, rootView, uuid);
@@ -108,7 +113,7 @@ public class ExaminatorActivity extends AppCompatActivity implements SelectADFDi
 			mTangoHandler.exportADF(uuid);
 		} else if(ADFaction.load.equals(mADFaction)){
 			Intent i = new Intent(this, ExaminatorActivity.class);
-			i.putExtra("uuid",uuid);
+			i.putExtra(KEY_UUID,uuid);
 			startActivity(i);
 			this.finish();
 		}
