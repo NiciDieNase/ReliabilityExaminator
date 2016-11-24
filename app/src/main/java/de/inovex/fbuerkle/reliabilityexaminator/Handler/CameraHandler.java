@@ -113,6 +113,8 @@ public class CameraHandler {
 					}
 				} catch (TangoErrorException e) {
 					Log.e(TAG, "Tango API call error within the OpenGL thread", e);
+				} catch (TangoInvalidException e){
+					Log.e(TAG, "Tango Invalid " + e.getMessage());
 				}
 			}
 		});

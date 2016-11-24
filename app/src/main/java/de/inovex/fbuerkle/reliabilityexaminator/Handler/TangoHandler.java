@@ -142,7 +142,7 @@ public class TangoHandler {
 							mTangoUx.showTangoOutOfDate();
 						}
 					} catch (TangoInvalidException e){
-						Log.d(TAG,e.getMessage());
+						Log.d(TAG, "TangoInvalidException" + e.getMessage());
 					}
 					mIsConnected = true;
 					mCameraHandler.connectCamera();

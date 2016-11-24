@@ -63,10 +63,11 @@ public class ADFHandler {
 			((Activity)mContext).runOnUiThread(new Runnable() {
 				@Override
 				public void run() {
-					if(pose.statusCode == TangoPoseData.POSE_VALID && mADFLocated){
+					if(pose.statusCode == TangoPoseData.POSE_VALID && !mADFLocated){
 						located.setText(R.string.yes);
 						long time = System.currentTimeMillis() - mStartTime;
 						adfTime.setText(Long.toString(time) + " ms");
+						mADFLocated = true;
 					}
 					confidence.setText(Integer.toString(pose.confidence));
 					lastLocated.setText(Double.toString(pose.timestamp-lastLocatedTime));
