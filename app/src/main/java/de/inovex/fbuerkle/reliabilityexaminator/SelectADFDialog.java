@@ -26,7 +26,9 @@ public class SelectADFDialog extends DialogFragment implements ADFAdapter.ViewHo
 
 	@Override
 	public void onADFSelect(String uuid) {
-		mListener.onADFSelected(uuid);
+		if(null != mListener){
+			mListener.onADFSelected(uuid);
+		}
 		this.dismiss();
 	}
 

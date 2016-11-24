@@ -12,6 +12,7 @@ import com.google.atap.tangoservice.TangoConfig;
 import com.google.atap.tangoservice.TangoCoordinateFramePair;
 import com.google.atap.tangoservice.TangoErrorException;
 import com.google.atap.tangoservice.TangoEvent;
+import com.google.atap.tangoservice.TangoInvalidException;
 import com.google.atap.tangoservice.TangoOutOfDateException;
 import com.google.atap.tangoservice.TangoPointCloudData;
 import com.google.atap.tangoservice.TangoPoseData;
@@ -140,6 +141,8 @@ public class TangoHandler {
 						if(null != mTangoUx){
 							mTangoUx.showTangoOutOfDate();
 						}
+					} catch (TangoInvalidException e){
+						Log.d(TAG,e.getMessage());
 					}
 					mIsConnected = true;
 					mCameraHandler.connectCamera();

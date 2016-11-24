@@ -68,19 +68,19 @@ public class ADFDataSource {
 		String[] list = new String[mFullUUIDList.size()];
 		for (int i = 0; i < mFullUUIDList.size(); i++) {
 			try {
-				metadata = mTango.loadAreaDescriptionMetaData(mFullUUIDList.get(i));
+//				metadata = mTango.loadAreaDescriptionMetaData(mFullUUIDList.get(i));
 			} catch (TangoErrorException e) {
 				if(mContext != null){
 					Toast.makeText(mContext, R.string.tango_error, Toast.LENGTH_SHORT).show();
 				}
 				Log.d(TAG,"Tango Error while loading ADF Metadata");
 			}
-			byte[] bytes = metadata.get(TangoAreaDescriptionMetaData.KEY_NAME);
-			if(bytes != null){
-				list[i] = new String(bytes);
-			} else {
+//			byte[] bytes = metadata.get(TangoAreaDescriptionMetaData.KEY_NAME);
+//			if(bytes != null){
+//				list[i] = new String(bytes);
+//			} else {
 				list[i] = "<no_name_found>";
-			}
+//			}
 			Log.d(TAG,list[i]);
 		}
 		return list;

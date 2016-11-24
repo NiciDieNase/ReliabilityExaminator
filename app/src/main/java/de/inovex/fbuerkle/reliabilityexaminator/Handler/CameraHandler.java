@@ -78,6 +78,8 @@ public class CameraHandler {
 							}
 						} catch (TangoInvalidException e){
 							Log.d(TAG,e.getMessage());
+						} catch (NullPointerException e){
+							Log.d(TAG,e.getMessage());
 						}
 					}
 				} catch (TangoErrorException e) {
