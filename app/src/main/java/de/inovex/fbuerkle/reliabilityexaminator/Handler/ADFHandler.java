@@ -36,6 +36,7 @@ public class ADFHandler {
 	public ADFHandler(final Context mContext, final TangoHandler mTangoHandler, final ViewGroup rootView) {
 		this.mContext = mContext;
 		this.mTangoHandler = mTangoHandler;
+		mStartTime = System.currentTimeMillis();
 
 		final String uuid = mTangoHandler.getUuid();
 		Log.d(TAG,uuid != null ? uuid : "No ADF");
@@ -62,12 +63,14 @@ public class ADFHandler {
 			((Activity)mContext).runOnUiThread(new Runnable() {
 				@Override
 				public void run() {
-					if(pose.statusCode == TangoPoseData.POSE_VALID){
+					if(pose.statusCode == TangoPoseData.POSE_VALID && mADFLocated){
 						located.setText(R.string.yes);
+						long time = System.currentTimeMillis() - mStartTime;
+						adfTime.setText(Long.toString(time) + " ms");
 					}
 					confidence.setText(Integer.toString(pose.confidence));
+					lastLocated.setText(Double.toString(pose.timestamp-lastLocatedTime));
 					lastLocatedTime = pose.timestamp;
-					lastLocated.setText(Double.toString(lastLocatedTime));
 				}
 			});
 		}

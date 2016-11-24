@@ -154,4 +154,13 @@
         app:layout_constraintLeft_toLeftOf="@+id/tv_adf_lastlocated_value"
         app:layout_constraintTop_toTopOf="@+id/tv_adf_confidence_label"/>
 
+    <TextView
+        android:text="@string/empty_value"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/tv_adf_located_time"
+        app:layout_constraintTop_toTopOf="@+id/tv_adf_located_value"
+        android:layout_marginStart="8dp"
+        app:layout_constraintLeft_toRightOf="@+id/tv_adf_located_value"/>
+
 </android.support.constraint.ConstraintLayout>
