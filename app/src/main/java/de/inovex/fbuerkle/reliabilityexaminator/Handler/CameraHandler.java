@@ -77,7 +77,7 @@ public class CameraHandler {
 										mTangoHandler.getTango().updateTexture(TangoCameraIntrinsics.TANGO_CAMERA_COLOR);
 							}
 						} catch (TangoInvalidException e){
-							Log.d(TAG,e.getMessage());
+							Log.d(TAG,"Tango Invalid " + e.getMessage());
 						} catch (NullPointerException e){
 							Log.d(TAG,e.getMessage());
 						}

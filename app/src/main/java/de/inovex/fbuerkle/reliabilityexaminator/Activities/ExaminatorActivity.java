@@ -3,6 +3,7 @@ package de.inovex.fbuerkle.reliabilityexaminator.Activities;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
+import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
@@ -13,6 +14,8 @@ import android.view.ViewGroup;
 
 import com.google.atap.tangoservice.Tango;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
 import de.inovex.fbuerkle.reliabilityexaminator.Handler.SensorHandler;
 import de.inovex.fbuerkle.reliabilityexaminator.Handler.TangoHandler;
 import de.inovex.fbuerkle.reliabilityexaminator.R;
@@ -25,6 +28,9 @@ public class ExaminatorActivity extends AppCompatActivity implements SelectADFDi
 
 	private SensorHandler mSensorHandler;
 	private TangoHandler mTangoHandler;
+	@BindView(R.id.layout_tango) ViewGroup rootView;
+	@BindView(R.id.toolbar) Toolbar toolbar;
+	@BindView(R.id.fab) FloatingActionButton fab;
 
 	enum ADFaction{undef, export, load;}
 	ADFaction mADFaction = ADFaction.undef;
@@ -33,15 +39,11 @@ public class ExaminatorActivity extends AppCompatActivity implements SelectADFDi
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main);
-		ViewGroup rootView = (ViewGroup) findViewById(R.id.layout_tango);
-		Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+		ButterKnife.bind(this);
 		setSupportActionBar(toolbar);
-		FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
 		fab.setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View view) {
-//				Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-//						.setAction("Action", null).show();
 				mADFaction = ADFaction.load;
 				new SelectADFDialog()
 						.setmContext(ExaminatorActivity.this)
@@ -58,6 +60,7 @@ public class ExaminatorActivity extends AppCompatActivity implements SelectADFDi
 		if(extras != null){
 			uuid = extras.getString(KEY_UUID,"");
 		}
+		Snackbar.make(rootView, "Started with ADF: "+uuid,Snackbar.LENGTH_SHORT).show();
 
 		mSensorHandler = new SensorHandler(this, rootView);
 		mTangoHandler = new TangoHandler(this, rootView, uuid);
@@ -109,6 +112,8 @@ public class ExaminatorActivity extends AppCompatActivity implements SelectADFDi
 			return;
 		} else if(ADFaction.export.equals(mADFaction)){
 			mTangoHandler.exportADF(uuid);
+			Snackbar.make(rootView, "Exported ADF: " + uuid, Snackbar.LENGTH_LONG)
+					.setAction("Action", null).show();
 		} else if(ADFaction.load.equals(mADFaction)){
 			loadADF(uuid);
 		}
