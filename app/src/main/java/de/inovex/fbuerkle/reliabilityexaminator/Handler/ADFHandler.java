@@ -22,13 +22,16 @@ public class ADFHandler {
 
 	private final Context mContext;
 	private final TangoHandler mTangoHandler;
-	@BindView(R.id.tv_adf_status_value) protected TextView adfStatus;
-	@BindView(R.id.tv_adf_name_value) protected TextView adfName;
-	@BindView(R.id.tv_adf_id_value) protected TextView adfId;
-	@BindView(R.id.tv_adf_located_value) protected TextView located;
-	@BindView(R.id.tv_adf_lastlocated_value) protected TextView lastLocated;
-	@BindView(R.id.tv_adf_confidence_value) protected TextView confidence;
-	private double lastLocatedTime;
+	private final long mStartTime;
+	private boolean mADFLocated = false;
+	@BindView(R.id.tv_adf_status_value) TextView adfStatus;
+	@BindView(R.id.tv_adf_name_value) TextView adfName;
+	@BindView(R.id.tv_adf_id_value) TextView adfId;
+	@BindView(R.id.tv_adf_located_value) TextView located;
+	@BindView(R.id.tv_adf_lastlocated_value) TextView lastLocated;
+	@BindView(R.id.tv_adf_confidence_value) TextView confidence;
+	@BindView(R.id.tv_adf_located_time) TextView adfTime;
+	private double lastLocatedTime = 0.0;
 
 	public ADFHandler(final Context mContext, final TangoHandler mTangoHandler, final ViewGroup rootView) {
 		this.mContext = mContext;
@@ -49,7 +52,6 @@ public class ADFHandler {
 					adfName.setText(name);
 				}
 			});
-
 		}
 		Log.d(TAG,"ADF Handler Started");
 	}

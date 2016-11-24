@@ -10,7 +10,6 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.TextView;
 
 import com.google.atap.tangoservice.Tango;
 
@@ -35,9 +34,6 @@ public class ExaminatorActivity extends AppCompatActivity implements SelectADFDi
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main);
 		ViewGroup rootView = (ViewGroup) findViewById(R.id.layout_tango);
-
-		TextView textView = (TextView) findViewById(R.id.tv_pitch_value);
-
 		Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
 		setSupportActionBar(toolbar);
 		FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
@@ -47,7 +43,9 @@ public class ExaminatorActivity extends AppCompatActivity implements SelectADFDi
 //				Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
 //						.setAction("Action", null).show();
 				mADFaction = ADFaction.load;
-				new SelectADFDialog().show(getFragmentManager(),"selectADF");
+				new SelectADFDialog()
+						.setmContext(ExaminatorActivity.this)
+						.show(getFragmentManager(),"selectADF");
 			}
 		});
 
@@ -112,11 +110,15 @@ public class ExaminatorActivity extends AppCompatActivity implements SelectADFDi
 		} else if(ADFaction.export.equals(mADFaction)){
 			mTangoHandler.exportADF(uuid);
 		} else if(ADFaction.load.equals(mADFaction)){
-			Intent i = new Intent(this, ExaminatorActivity.class);
-			i.putExtra(KEY_UUID,uuid);
-			startActivity(i);
-			this.finish();
+			loadADF(uuid);
 		}
 		mADFaction = ADFaction.undef;
+	}
+
+	private void loadADF(String uuid) {
+		Intent i = new Intent(this, ExaminatorActivity.class);
+		i.putExtra(KEY_UUID,uuid);
+		startActivity(i);
+		this.finish();
 	}
 }
