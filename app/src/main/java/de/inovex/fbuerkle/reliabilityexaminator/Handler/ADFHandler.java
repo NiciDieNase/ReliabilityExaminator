@@ -89,7 +89,12 @@ public class ADFHandler {
 		if(pose.baseFrame == TangoPoseData.COORDINATE_FRAME_AREA_DESCRIPTION
 				&& pose.targetFrame == TangoPoseData.COORDINATE_FRAME_DEVICE){
 			float[] position = pose.getTranslationAsFloats();
-			mProtocolHandler.logPosition(System.currentTimeMillis(),position[0],position[1],position[2]);
+			mProtocolHandler.logADFPosition(System.currentTimeMillis(),position[0],position[1],position[2]);
+		}
+		if(pose.baseFrame == TangoPoseData.COORDINATE_FRAME_START_OF_SERVICE
+				&& pose.targetFrame == TangoPoseData.COORDINATE_FRAME_DEVICE){
+			float[] position = pose.getTranslationAsFloats();
+			mProtocolHandler.logSoSPosition(System.currentTimeMillis(),position[0],position[1],position[2]);
 		}
 	}
 

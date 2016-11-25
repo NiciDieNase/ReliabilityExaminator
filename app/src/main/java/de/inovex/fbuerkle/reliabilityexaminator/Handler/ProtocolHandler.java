@@ -18,6 +18,7 @@ public class ProtocolHandler {
 	private FileWriter angleFW;
 	private FileWriter eventFW;
 	private FileWriter positionFW;
+	private FileWriter positionSoSFW;
 
 	private boolean active = false;
 	private String uuid;
@@ -31,6 +32,7 @@ public class ProtocolHandler {
 		File angleLogfile = new File(path + "angles.csv");
 		File eventLogfile = new File(path + "adfEvents.csv");
 		File positionLogfile = new File(path + "positions.csv");
+		File positionSosLogfile = new File(path + "positions_sos.csv");
 		try {
 			if(!angleLogfile.exists() || !angleLogfile.isFile()){
 				angleLogfile.createNewFile();
@@ -44,6 +46,10 @@ public class ProtocolHandler {
 				positionLogfile.createNewFile();
 			}
 			positionFW = new FileWriter(positionLogfile, true);
+			if(!positionSosLogfile.exists() || !positionSosLogfile.isFile()){
+				positionSosLogfile.createNewFile();
+			}
+			positionSoSFW = new FileWriter(positionSosLogfile, true);
 
 			angleFW.append(String.format("# ADF-ID: %s\n",this.uuid));
 			angleFW.append("#system-timestamp\tangle\n");
@@ -51,6 +57,8 @@ public class ProtocolHandler {
 			eventFW.append("#system-timestamp\ttime since last event\tconfidence\n");
 			positionFW.append(String.format("# ADF-ID: %s\n",this.uuid));
 			positionFW.append("#system-timestamp\tx\ty\tz\n");
+			positionSoSFW.append(String.format("# ADF-ID: %s\n",this.uuid));
+			positionSoSFW.append("#system-timestamp\tx\ty\tz\n");
 			active = true;
 		} catch (IOException e) {
 			e.printStackTrace();
@@ -85,10 +93,20 @@ public class ProtocolHandler {
 		}
 	}
 
-	public void logPosition(long systemTimestamp, double xPos, double yPos, double zPos){
+	public void logADFPosition(long systemTimestamp, double xPos, double yPos, double zPos){
 		if(active){
 			try {
 				positionFW.append(String.format("%d\t%s\t%s\t%s\t\n",systemTimestamp,xPos,yPos,zPos));
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		}
+	}
+
+	public void logSoSPosition(long systemTimestamp, double xPos, double yPos, double zPos){
+		if(active){
+			try {
+				positionSoSFW.append(String.format("%d\t%s\t%s\t%s\t\n",systemTimestamp,xPos,yPos,zPos));
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
