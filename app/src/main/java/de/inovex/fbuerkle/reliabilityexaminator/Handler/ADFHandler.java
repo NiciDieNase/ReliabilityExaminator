@@ -21,7 +21,6 @@ public class ADFHandler {
 	private final String TAG = ADFHandler.class.getSimpleName();
 
 	private final Context mContext;
-	private final TangoHandler mTangoHandler;
 	private final ProtocolHandler mProtocolHandler;
 	private final long mStartTime;
 	private boolean mADFLocated = false;
@@ -37,7 +36,6 @@ public class ADFHandler {
 	public ADFHandler(final Context mContext, final TangoHandler mTangoHandler,
 					  final ProtocolHandler mProtocolHandler, final ViewGroup rootView) {
 		this.mContext = mContext;
-		this.mTangoHandler = mTangoHandler;
 		this.mProtocolHandler = mProtocolHandler;
 		mStartTime = System.currentTimeMillis();
 
@@ -80,14 +78,17 @@ public class ADFHandler {
 						}
 						mProtocolHandler.logADFLocationEvent(timestamp,
 								timeSinceLastEvent,pose.confidence,!mADFLocated);
-						float[] position = pose.getTranslationAsFloats();
-						mProtocolHandler.logPosition(timestamp,position[0],position[1],position[2]);
 						confidence.setText(Integer.toString(pose.confidence));
 						lastLocated.setText(Double.toString(timeSinceLastEvent));
 						lastEventTimestamp = pose.timestamp;
 					}
 				}
 			});
+		}
+		if(pose.baseFrame == TangoPoseData.COORDINATE_FRAME_AREA_DESCRIPTION
+				&& pose.targetFrame == TangoPoseData.COORDINATE_FRAME_DEVICE){
+			float[] position = pose.getTranslationAsFloats();
+			mProtocolHandler.logPosition(System.currentTimeMillis(),position[0],position[1],position[2]);
 		}
 	}
 

@@ -89,6 +89,12 @@ public class ExaminatorActivity extends AppCompatActivity implements SelectADFDi
 		super.onPause();
 		mTangoHandler.onPause();
 		mSensorHandler.onPause();
+		mProtocolHandler.flush();
+	}
+
+	@Override
+	protected void onStop() {
+		super.onStop();
 		mProtocolHandler.stopProtocol();
 	}
 
