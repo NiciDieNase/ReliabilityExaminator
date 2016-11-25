@@ -20,8 +20,10 @@ public class ProtocolHandler {
 	private FileWriter positionFW;
 
 	private boolean active = false;
+	private String uuid;
 
 	public void startProtocol(String uuid){
+		this.uuid = uuid;
 		Log.d(TAG, "Start writing data-protocol");
 		String path = "/storage/emulated/legacy/reliabilityexaminator/"
 				+ new DateTime().toString("yyyyMMdd-HH:mm:ss") + "/";
@@ -43,11 +45,11 @@ public class ProtocolHandler {
 			}
 			positionFW = new FileWriter(positionLogfile, true);
 
-//			angleFW.append("#" + new DateTime().toString("yyyyMMdd-HH:mm:ss") + "\t" + uuid + "\n");
-//			eventFW.append("#" + new DateTime().toString("yyyyMMdd-HH:mm:ss") + "\t" + uuid + "\n");
-
+			angleFW.append(String.format("# ADF-ID: %s\n",this.uuid));
 			angleFW.append("#system-timestamp\tangle\n");
+			eventFW.append(String.format("# ADF-ID: %s\n",this.uuid));
 			eventFW.append("#system-timestamp\ttime since last event\tconfidence\n");
+			positionFW.append(String.format("# ADF-ID: %s\n",this.uuid));
 			positionFW.append("#system-timestamp\tx\ty\tz\n");
 			active = true;
 		} catch (IOException e) {
@@ -104,6 +106,22 @@ public class ProtocolHandler {
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
+		}
+	}
+
+	public void logInitialLocalization(long timeToLocalization, long timestamp){
+		String date = new DateTime().toString("yyyyMMdd-HH:mm:ss");
+		try {
+			File file = new File("/storage/emulated/legacy/reliabilityexaminator/initialLocalization.csv");
+			FileWriter writer = new FileWriter(file,true);
+			if(!file.exists()){
+				writer.append("# date\tsystem-timestamp\tadf-uuid\ttime-to-localization\n");
+			}
+			writer.append(String.format("%s\t%d\t%s\t%d\n",date,timestamp,uuid,timeToLocalization));
+			writer.flush();
+			writer.close();
+		} catch (IOException e) {
+			e.printStackTrace();
 		}
 	}
 

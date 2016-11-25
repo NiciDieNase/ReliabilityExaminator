@@ -74,10 +74,11 @@ public class ADFHandler {
 							located.setText(R.string.yes);
 							long time = timestamp - mStartTime;
 							adfTime.setText(Long.toString(time) + " ms");
+							mProtocolHandler.logInitialLocalization(time,timestamp);
 							mADFLocated = true;
 						}
 						mProtocolHandler.logADFLocationEvent(timestamp,
-								timeSinceLastEvent,pose.confidence,!mADFLocated);
+								timeSinceLastEvent,pose.confidence,lastEventTimestamp==-1.0);
 						confidence.setText(Integer.toString(pose.confidence));
 						lastLocated.setText(Double.toString(timeSinceLastEvent));
 						lastEventTimestamp = pose.timestamp;
