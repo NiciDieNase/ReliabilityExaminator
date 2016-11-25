@@ -54,7 +54,7 @@ public class ProtocolHandler {
 			angleFW.append(String.format("# ADF-ID: %s\n",this.uuid));
 			angleFW.append("#system-timestamp\tangle\n");
 			eventFW.append(String.format("# ADF-ID: %s\n",this.uuid));
-			eventFW.append("#system-timestamp\ttime since last event\tconfidence\n");
+			eventFW.append("#system-timestamp\ttime since last event\tconfidence\tx\ty\tz\n");
 			positionFW.append(String.format("# ADF-ID: %s\n",this.uuid));
 			positionFW.append("#system-timestamp\tx\ty\tz\n");
 			positionSoSFW.append(String.format("# ADF-ID: %s\n",this.uuid));
@@ -113,13 +113,13 @@ public class ProtocolHandler {
 		}
 	}
 
-	public void logADFLocationEvent(long systemTimestamp, double timeSinceLastEvent, int confidence, boolean isInitialLocation){
+	public void logADFLocationEvent(long systemTimestamp, double timeSinceLastEvent, int confidence, boolean isInitialLocation,float x,float y,float z){
 		if(active){
 			try {
 				if(isInitialLocation){
 					eventFW.append(String.format("#Time to first Location: \t%s\n",timeSinceLastEvent));
 				} else {
-					eventFW.append(String.format("%d\t%s\t%d\n",systemTimestamp,timeSinceLastEvent,confidence));
+					eventFW.append(String.format("%d\t%s\t%d\t%f\t%f\t%f\n",systemTimestamp,timeSinceLastEvent,confidence,x,y,z));
 				}
 			} catch (IOException e) {
 				e.printStackTrace();

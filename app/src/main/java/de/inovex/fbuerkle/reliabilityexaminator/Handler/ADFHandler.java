@@ -77,8 +77,10 @@ public class ADFHandler {
 							mProtocolHandler.logInitialLocalization(time,timestamp);
 							mADFLocated = true;
 						}
+						float[] position = pose.getTranslationAsFloats();
 						mProtocolHandler.logADFLocationEvent(timestamp,
-								timeSinceLastEvent,pose.confidence,lastEventTimestamp==-1.0);
+								timeSinceLastEvent,pose.confidence,lastEventTimestamp==-1.0,
+								position[0],position[1],position[2]);
 						confidence.setText(Integer.toString(pose.confidence));
 						lastLocated.setText(Double.toString(timeSinceLastEvent));
 						lastEventTimestamp = pose.timestamp;
