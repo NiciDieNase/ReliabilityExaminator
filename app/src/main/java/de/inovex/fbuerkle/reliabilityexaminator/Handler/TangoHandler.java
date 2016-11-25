@@ -34,6 +34,7 @@ public class TangoHandler {
 	private final CameraHandler mCameraHandler;
 	private ADFHandler mADFHandler;
 	private final TangoUx mTangoUx;
+	private ProtocolHandler mProtocolHandler;
 
 	public String getUuid() {
 		return uuid;
@@ -50,10 +51,11 @@ public class TangoHandler {
 	@BindView(R.id.top_preview) GLSurfaceView rgbView;
 	@BindView(R.id.bottom_preview) GLSurfaceView fisheyeView;
 
-	public TangoHandler(Context context, ViewGroup view, String uuid) {
+	public TangoHandler(Context context, ViewGroup view, String uuid,ProtocolHandler mProtocolHandler) {
 		this.mContext = context;
 		rootView = view;
 		this.uuid = uuid;
+		this.mProtocolHandler = mProtocolHandler;
 		ButterKnife.bind(this, view);
 
 		mTangoUx = new TangoUx(mContext);
@@ -146,7 +148,7 @@ public class TangoHandler {
 					}
 					mIsConnected = true;
 					mCameraHandler.connectCamera();
-					mADFHandler = new ADFHandler(mContext,TangoHandler.this,rootView);
+					mADFHandler = new ADFHandler(mContext,TangoHandler.this,mProtocolHandler,rootView);
 					Log.d(TAG, "Resumed, Tango started");
 				}
 			}

@@ -22,6 +22,7 @@ public class ADFHandler {
 
 	private final Context mContext;
 	private final TangoHandler mTangoHandler;
+	private final ProtocolHandler mProtocolHandler;
 	private final long mStartTime;
 	private boolean mADFLocated = false;
 	@BindView(R.id.tv_adf_status_value) TextView adfStatus;
@@ -31,11 +32,13 @@ public class ADFHandler {
 	@BindView(R.id.tv_adf_lastlocated_value) TextView lastLocated;
 	@BindView(R.id.tv_adf_confidence_value) TextView confidence;
 	@BindView(R.id.tv_adf_located_time) TextView adfTime;
-	private double lastLocatedTime = 0.0;
+	private double lastEventTimestamp = -1.0;
 
-	public ADFHandler(final Context mContext, final TangoHandler mTangoHandler, final ViewGroup rootView) {
+	public ADFHandler(final Context mContext, final TangoHandler mTangoHandler,
+					  final ProtocolHandler mProtocolHandler, final ViewGroup rootView) {
 		this.mContext = mContext;
 		this.mTangoHandler = mTangoHandler;
+		this.mProtocolHandler = mProtocolHandler;
 		mStartTime = System.currentTimeMillis();
 
 		final String uuid = mTangoHandler.getUuid();
@@ -63,15 +66,23 @@ public class ADFHandler {
 			((Activity)mContext).runOnUiThread(new Runnable() {
 				@Override
 				public void run() {
-					if(pose.statusCode == TangoPoseData.POSE_VALID && !mADFLocated){
-						located.setText(R.string.yes);
-						long time = System.currentTimeMillis() - mStartTime;
-						adfTime.setText(Long.toString(time) + " ms");
-						mADFLocated = true;
+					if(pose.statusCode == TangoPoseData.POSE_VALID){
+						double timeSinceLastEvent = -1.0;
+						if(lastEventTimestamp != -1.0){
+							timeSinceLastEvent = pose.timestamp-lastEventTimestamp;
+						}
+						if(!mADFLocated){
+							located.setText(R.string.yes);
+							long time = System.currentTimeMillis() - mStartTime;
+							adfTime.setText(Long.toString(time) + " ms");
+							mADFLocated = true;
+						}
+						mProtocolHandler.logADFLocationEvent(System.currentTimeMillis(),
+								timeSinceLastEvent,pose.confidence,!mADFLocated);
+						confidence.setText(Integer.toString(pose.confidence));
+						lastLocated.setText(Double.toString(timeSinceLastEvent));
+						lastEventTimestamp = pose.timestamp;
 					}
-					confidence.setText(Integer.toString(pose.confidence));
-					lastLocated.setText(Double.toString(pose.timestamp-lastLocatedTime));
-					lastLocatedTime = pose.timestamp;
 				}
 			});
 		}

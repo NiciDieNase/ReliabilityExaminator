@@ -16,6 +16,7 @@ import com.google.atap.tangoservice.Tango;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import de.inovex.fbuerkle.reliabilityexaminator.Handler.ProtocolHandler;
 import de.inovex.fbuerkle.reliabilityexaminator.Handler.SensorHandler;
 import de.inovex.fbuerkle.reliabilityexaminator.Handler.TangoHandler;
 import de.inovex.fbuerkle.reliabilityexaminator.R;
@@ -28,9 +29,11 @@ public class ExaminatorActivity extends AppCompatActivity implements SelectADFDi
 
 	private SensorHandler mSensorHandler;
 	private TangoHandler mTangoHandler;
+	private ProtocolHandler mProtocolHandler;
 	@BindView(R.id.layout_tango) ViewGroup rootView;
 	@BindView(R.id.toolbar) Toolbar toolbar;
 	@BindView(R.id.fab) FloatingActionButton fab;
+	private String uuid;
 
 	enum ADFaction{undef, export, load;}
 	ADFaction mADFaction = ADFaction.undef;
@@ -44,10 +47,12 @@ public class ExaminatorActivity extends AppCompatActivity implements SelectADFDi
 		fab.setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View view) {
-				mADFaction = ADFaction.load;
-				new SelectADFDialog()
-						.setmContext(ExaminatorActivity.this)
-						.show(getFragmentManager(),"selectADF");
+				mProtocolHandler.startProtocol(uuid);
+//				mADFaction = ADFaction.load;
+//				new SelectADFDialog()
+//						.setmContext(ExaminatorActivity.this)
+//						.show(getFragmentManager(),"selectADF");
+				fab.hide();
 			}
 		});
 
@@ -56,14 +61,19 @@ public class ExaminatorActivity extends AppCompatActivity implements SelectADFDi
 				Tango.TANGO_INTENT_ACTIVITYCODE);
 
 		Bundle extras = getIntent().getExtras();
-		String uuid = "";
+		uuid = "";
 		if(extras != null){
 			uuid = extras.getString(KEY_UUID,"");
 		}
-		Snackbar.make(rootView, "Started with ADF: "+uuid,Snackbar.LENGTH_SHORT).show();
+		mProtocolHandler = new ProtocolHandler();
+		if(uuid != ""){
+			Snackbar.make(rootView, "Started with ADF: "+uuid,Snackbar.LENGTH_SHORT).show();
+			mProtocolHandler.startProtocol(uuid);
+			fab.hide();
+		}
 
-		mSensorHandler = new SensorHandler(this, rootView);
-		mTangoHandler = new TangoHandler(this, rootView, uuid);
+		mSensorHandler = new SensorHandler(this, rootView, mProtocolHandler);
+		mTangoHandler = new TangoHandler(this, rootView, uuid, mProtocolHandler);
 	}
 
 
@@ -79,6 +89,7 @@ public class ExaminatorActivity extends AppCompatActivity implements SelectADFDi
 		super.onPause();
 		mTangoHandler.onPause();
 		mSensorHandler.onPause();
+		mProtocolHandler.stopProtocol();
 	}
 
 	@Override
@@ -100,6 +111,9 @@ public class ExaminatorActivity extends AppCompatActivity implements SelectADFDi
 			case R.id.action_load_adf:
 				mADFaction = ADFaction.load;
 				new SelectADFDialog().setmContext(this).show(getFragmentManager(),"selectADF");
+				return true;
+			case R.id.action_stop_protocol:
+				mProtocolHandler.stopProtocol();
 				return true;
 		}
 		return super.onOptionsItemSelected(item);

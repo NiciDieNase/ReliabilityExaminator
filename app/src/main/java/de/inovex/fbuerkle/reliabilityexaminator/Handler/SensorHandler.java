@@ -34,9 +34,11 @@ public class SensorHandler implements SensorEventListener{
 	private final float[] mOrientationAngles = new float[3];
 	private List<Double> angleBuffer = new LinkedList<>();
 	@BindView(R.id.tv_pitch_value) protected TextView tvPitchValue;
+	private ProtocolHandler mProtocolHandler;
 
-	public SensorHandler(Context context, ViewGroup rootView){
+	public SensorHandler(Context context, ViewGroup rootView, ProtocolHandler mProtocolHandler){
 		mContext = context;
+		this.mProtocolHandler = mProtocolHandler;
 		ButterKnife.bind(this,rootView);
 		mSensorManager = (SensorManager) mContext.getSystemService(Context.SENSOR_SERVICE);
 		mAccelerationSensor = mSensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
@@ -71,7 +73,11 @@ public class SensorHandler implements SensorEventListener{
 			sum += d;
 		}
 		DecimalFormat format = new DecimalFormat("0.0");
-		tvPitchValue.setText(format.format(sum/angleBuffer.size()) + "°");
+		double avg = sum / angleBuffer.size();
+		tvPitchValue.setText(String.format("%s°", avg));
+
+		// TODO log device angle
+		mProtocolHandler.logDeviceAngle(System.currentTimeMillis(),avg);
 	}
 
 	public void onResume(){

@@ -35,9 +35,8 @@
             android:layout_height="wrap_content"
             android:layout_gravity="bottom|center_horizontal"
             android:layout_margin="@dimen/fab_margin"
-            app:srcCompat="@android:drawable/ic_menu_upload"
             app:layout_anchorGravity="bottom|center_horizontal"
-            app:backgroundTint="?attr/actionModeSplitBackground"/>
+            app:backgroundTint="@android:color/holo_red_light"/>
 
     </android.support.design.widget.CoordinatorLayout>
  </com.google.atap.tango.ux.TangoUxLayout>

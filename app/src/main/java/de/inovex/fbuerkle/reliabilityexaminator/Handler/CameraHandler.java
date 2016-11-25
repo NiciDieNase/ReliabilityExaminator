@@ -60,7 +60,7 @@ public class CameraHandler {
 			@Override
 			public void preRender() {
 				if(!mTangoHandler.isConnected()){
-					Log.d(TAG,"Tango not connected, won't setup RGB-Renderer");
+//					Log.d(TAG,"Tango not connected, won't setup RGB-Renderer");
 					return;
 				}
 				try{
@@ -95,7 +95,7 @@ public class CameraHandler {
 			@Override
 			public void preRender() {
 				if(!mTangoHandler.isConnected()){
-					Log.d(TAG,"Tango not connected, won't setup Fisheye Renderer");
+//					Log.d(TAG,"Tango not connected, won't setup Fisheye Renderer");
 					return;
 				}
 				try{
