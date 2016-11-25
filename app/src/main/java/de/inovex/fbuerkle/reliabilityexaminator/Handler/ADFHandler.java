@@ -71,14 +71,17 @@ public class ADFHandler {
 						if(lastEventTimestamp != -1.0){
 							timeSinceLastEvent = pose.timestamp-lastEventTimestamp;
 						}
+						long timestamp = System.currentTimeMillis();
 						if(!mADFLocated){
 							located.setText(R.string.yes);
-							long time = System.currentTimeMillis() - mStartTime;
+							long time = timestamp - mStartTime;
 							adfTime.setText(Long.toString(time) + " ms");
 							mADFLocated = true;
 						}
-						mProtocolHandler.logADFLocationEvent(System.currentTimeMillis(),
+						mProtocolHandler.logADFLocationEvent(timestamp,
 								timeSinceLastEvent,pose.confidence,!mADFLocated);
+						float[] position = pose.getTranslationAsFloats();
+						mProtocolHandler.logPosition(timestamp,position[0],position[1],position[2]);
 						confidence.setText(Integer.toString(pose.confidence));
 						lastLocated.setText(Double.toString(timeSinceLastEvent));
 						lastEventTimestamp = pose.timestamp;

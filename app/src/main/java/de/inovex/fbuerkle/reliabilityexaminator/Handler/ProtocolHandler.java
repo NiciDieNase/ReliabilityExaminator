@@ -12,10 +12,9 @@ import java.io.IOException;
 
 public class ProtocolHandler {
 
-	private File angleLogfile;
-	private File eventLogfile;
 	private FileWriter angleFW;
 	private FileWriter eventFW;
+	private FileWriter positionFW;
 
 	private boolean active = false;
 
@@ -23,8 +22,9 @@ public class ProtocolHandler {
 		String path = "/storage/emulated/legacy/reliabilityexaminator/"
 				+ new DateTime().toString("yyyyMMdd-HH:mm:ss") + "/";
 		new File(path).mkdirs();
-		angleLogfile = new File(path + "angles.csv");
-		eventLogfile = new File(path + "adfEvents.csv");
+		File angleLogfile = new File(path + "angles.csv");
+		File eventLogfile = new File(path + "adfEvents.csv");
+		File positionLogfile = new File(path + "positions.csv");
 		try {
 			if(!angleLogfile.exists() || !angleLogfile.isFile()){
 				angleLogfile.createNewFile();
@@ -34,12 +34,17 @@ public class ProtocolHandler {
 				eventLogfile.createNewFile();
 			}
 			eventFW = new FileWriter(eventLogfile, true);
+			if(!positionLogfile.exists() || !positionLogfile.isFile()){
+				positionLogfile.createNewFile();
+			}
+			positionFW = new FileWriter(positionLogfile, true);
 
 //			angleFW.append("#" + new DateTime().toString("yyyyMMdd-HH:mm:ss") + "\t" + uuid + "\n");
 //			eventFW.append("#" + new DateTime().toString("yyyyMMdd-HH:mm:ss") + "\t" + uuid + "\n");
 
 			angleFW.append("#system-timestamp\tangle\n");
 			eventFW.append("#system-timestamp\ttime since last event\tconfidence\n");
+			positionFW.append("#system-timestamp\tx\ty\tz\n");
 			active = true;
 		} catch (IOException e) {
 			e.printStackTrace();
@@ -57,6 +62,10 @@ public class ProtocolHandler {
 				eventFW.flush();
 				eventFW.close();
 			}
+			if(positionFW != null){
+				positionFW.flush();
+				positionFW.close();
+			}
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
@@ -66,6 +75,16 @@ public class ProtocolHandler {
 		if(active){
 			try {
 				angleFW.append(String.format("%d\t%s\n", systemTimestamp, angle));
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		}
+	}
+
+	public void logPosition(long systemTimestamp, double xPos, double yPos, double zPos){
+		if(active){
+			try {
+				positionFW.append(String.format("%d\t%s\ts\ts\t\n",systemTimestamp,xPos,yPos,zPos));
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
