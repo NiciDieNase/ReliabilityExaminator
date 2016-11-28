@@ -15,6 +15,7 @@ import java.io.IOException;
 public class ProtocolHandler {
 
 	private static final String TAG = ProtocolHandler.class.getSimpleName();
+	public static final String TIMESTAMP = new DateTime().toString("yyyyMMdd-HH:mm:ss");
 	private FileWriter angleFW;
 	private FileWriter eventFW;
 	private FileWriter positionFW;
@@ -28,7 +29,7 @@ public class ProtocolHandler {
 		this.uuid = uuid;
 		Log.d(TAG, "Start writing data-protocol");
 		path = "/storage/emulated/legacy/reliabilityexaminator/"
-				+ new DateTime().toString("yyyyMMdd-HH:mm:ss") + "/";
+				+ TIMESTAMP + "/";
 		new File(path).mkdirs();
 		File angleLogfile = new File(path + "angles.csv");
 		File eventLogfile = new File(path + "adfEvents.csv");
@@ -130,14 +131,13 @@ public class ProtocolHandler {
 	}
 
 	public void logInitialLocalization(long timeToLocalization, long timestamp){
-		String date = new DateTime().toString("yyyyMMdd-HH:mm:ss");
 		try {
 			File file = new File("/storage/emulated/legacy/reliabilityexaminator/initialLocalization.csv");
 			FileWriter writer = new FileWriter(file,true);
 			if(!file.exists()){
 				writer.append("# date\tsystem-timestamp\tadf-uuid\ttime-to-localization\n");
 			}
-			writer.append(String.format("%s\t%d\t%s\t%d\n",date,timestamp,uuid,timeToLocalization));
+			writer.append(String.format("%s\t%d\t%s\t%d\n",TIMESTAMP,timestamp,uuid,timeToLocalization));
 			writer.flush();
 			writer.close();
 		} catch (IOException e) {
