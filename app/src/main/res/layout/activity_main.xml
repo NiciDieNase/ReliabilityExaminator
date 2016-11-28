@@ -39,16 +39,16 @@
             app:layout_anchorGravity="bottom|center_horizontal"
             app:backgroundTint="@android:color/holo_red_light"/>
 
-        <android.support.design.widget.FloatingActionButton
-            android:id="@+id/fab_screenshot"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="bottom|left"
-            android:layout_margin="@dimen/fab_margin"
-            app:layout_anchorGravity="bottom|left"
-            app:backgroundTint="?attr/colorPrimary"
-            app:srcCompat="@android:drawable/ic_menu_camera"
-            app:layout_anchor="@+id/include"/>
+        <!--<android.support.design.widget.FloatingActionButton-->
+            <!--android:id="@+id/fab_screenshot"-->
+            <!--android:layout_width="wrap_content"-->
+            <!--android:layout_height="wrap_content"-->
+            <!--android:layout_gravity="bottom|left"-->
+            <!--android:layout_margin="@dimen/fab_margin"-->
+            <!--app:layout_anchorGravity="bottom|left"-->
+            <!--app:backgroundTint="?attr/colorPrimary"-->
+            <!--app:srcCompat="@android:drawable/ic_menu_camera"-->
+            <!--app:layout_anchor="@+id/include"/>-->
 
     </android.support.design.widget.CoordinatorLayout>
  </com.google.atap.tango.ux.TangoUxLayout>

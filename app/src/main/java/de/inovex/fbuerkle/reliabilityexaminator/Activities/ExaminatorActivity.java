@@ -33,7 +33,7 @@ public class ExaminatorActivity extends AppCompatActivity implements SelectADFDi
 	@BindView(R.id.layout_tango) ViewGroup rootView;
 	@BindView(R.id.toolbar) Toolbar toolbar;
 	@BindView(R.id.fab) FloatingActionButton fab;
-	@BindView(R.id.fab_screenshot) FloatingActionButton fabScreenshot;
+//	@BindView(R.id.fab_screenshot) FloatingActionButton fabScreenshot;
 	private String uuid;
 
 	enum ADFaction{undef, export, load;}
@@ -53,12 +53,12 @@ public class ExaminatorActivity extends AppCompatActivity implements SelectADFDi
 				fab.hide();
 			}
 		});
-		fabScreenshot.setOnClickListener(new View.OnClickListener() {
-			@Override
-			public void onClick(View view) {
-				mTangoHandler.takeScreenshot();
-			}
-		});
+//		fabScreenshot.setOnClickListener(new View.OnClickListener() {
+//			@Override
+//			public void onClick(View view) {
+//				mTangoHandler.takeScreenshot();
+//			}
+//		});
 
 		startActivityForResult(
 				Tango.getRequestPermissionIntent(Tango.PERMISSIONTYPE_ADF_LOAD_SAVE),
@@ -73,7 +73,7 @@ public class ExaminatorActivity extends AppCompatActivity implements SelectADFDi
 		if(uuid != ""){
 			Snackbar.make(rootView, "Started with ADF: "+uuid,Snackbar.LENGTH_SHORT).show();
 			mProtocolHandler.startProtocol(uuid);
-			mTangoHandler.takeScreenshot();
+//			mTangoHandler.takeScreenshot();
 			fab.hide();
 		}
 
