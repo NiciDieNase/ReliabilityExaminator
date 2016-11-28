@@ -33,6 +33,7 @@ public class ExaminatorActivity extends AppCompatActivity implements SelectADFDi
 	@BindView(R.id.layout_tango) ViewGroup rootView;
 	@BindView(R.id.toolbar) Toolbar toolbar;
 	@BindView(R.id.fab) FloatingActionButton fab;
+	@BindView(R.id.fab_screenshot) FloatingActionButton fabScreenshot;
 	private String uuid;
 
 	enum ADFaction{undef, export, load;}
@@ -48,11 +49,14 @@ public class ExaminatorActivity extends AppCompatActivity implements SelectADFDi
 			@Override
 			public void onClick(View view) {
 				mProtocolHandler.startProtocol(uuid);
-//				mADFaction = ADFaction.load;
-//				new SelectADFDialog()
-//						.setmContext(ExaminatorActivity.this)
-//						.show(getFragmentManager(),"selectADF");
+				mTangoHandler.takeScreenshot();
 				fab.hide();
+			}
+		});
+		fabScreenshot.setOnClickListener(new View.OnClickListener() {
+			@Override
+			public void onClick(View view) {
+				mTangoHandler.takeScreenshot();
 			}
 		});
 
@@ -69,6 +73,7 @@ public class ExaminatorActivity extends AppCompatActivity implements SelectADFDi
 		if(uuid != ""){
 			Snackbar.make(rootView, "Started with ADF: "+uuid,Snackbar.LENGTH_SHORT).show();
 			mProtocolHandler.startProtocol(uuid);
+			mTangoHandler.takeScreenshot();
 			fab.hide();
 		}
 

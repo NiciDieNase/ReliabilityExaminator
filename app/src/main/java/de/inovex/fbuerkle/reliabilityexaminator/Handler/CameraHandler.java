@@ -153,4 +153,9 @@ public class CameraHandler {
 			}
 		}
 	}
+
+	public void takeScreenshots(){
+		mFisheyeRenderer.saveFrame();
+		mRgbRenderer.saveFrame();
+	}
 }

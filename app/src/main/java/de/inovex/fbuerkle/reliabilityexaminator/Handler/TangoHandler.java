@@ -184,4 +184,8 @@ public class TangoHandler {
 		String exportDir = "/storage/emulated/legacy/TangoADFs/";
 		mTango.exportAreaDescriptionFile(uuid,exportDir);
 	}
+
+	public void takeScreenshot(){
+		mCameraHandler.takeScreenshots();
+	}
 }

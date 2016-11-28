@@ -22,11 +22,12 @@ public class ProtocolHandler {
 
 	private boolean active = false;
 	private String uuid;
+	private String path;
 
 	public void startProtocol(String uuid){
 		this.uuid = uuid;
 		Log.d(TAG, "Start writing data-protocol");
-		String path = "/storage/emulated/legacy/reliabilityexaminator/"
+		path = "/storage/emulated/legacy/reliabilityexaminator/"
 				+ new DateTime().toString("yyyyMMdd-HH:mm:ss") + "/";
 		new File(path).mkdirs();
 		File angleLogfile = new File(path + "angles.csv");
