@@ -24,6 +24,8 @@ public class ProtocolHandler {
 	private boolean active = false;
 	private String uuid;
 	private String path;
+	private boolean isInitialLocation = true;
+	private long logStart;
 
 	public void startProtocol(String uuid){
 		this.uuid = uuid;
@@ -65,10 +67,15 @@ public class ProtocolHandler {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
+		logStart = System.currentTimeMillis();
 	}
 
 	public void stopProtocol(){
 		flush();
+		if(isInitialLocation){
+			long time = logStart - System.currentTimeMillis();
+			logLocalizationFailure(time);
+		}
 		active = false;
 		try {
 			if(angleFW != null){
@@ -143,6 +150,19 @@ public class ProtocolHandler {
 			writer.append(String.format("%s\t%d\t%s\t%d\n",TIMESTAMP,timestamp,uuid,timeToLocalization));
 			writer.flush();
 			writer.close();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
+
+	private void logLocalizationFailure(long timeToFailure) {
+		try {
+			File file = new File("/storage/emulated/legacy/reliabilityexaminator/localizationError.csv");
+			FileWriter writer = new FileWriter(file, true);
+			if(!file.exists()){
+				writer.append("# date\tsystem-timestamp\tadf-uuid\ttimeToFailure\n");
+			}
+			writer.append(String.format("%s\t%d\t%s\t%d\n",TIMESTAMP,uuid,timeToFailure));
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
