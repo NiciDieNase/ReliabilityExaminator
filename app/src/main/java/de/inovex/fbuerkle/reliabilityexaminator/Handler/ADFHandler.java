@@ -6,6 +6,7 @@ import android.util.Log;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import com.google.atap.tangoservice.Tango;
 import com.google.atap.tangoservice.TangoAreaDescriptionMetaData;
 import com.google.atap.tangoservice.TangoPoseData;
 
@@ -21,6 +22,7 @@ public class ADFHandler {
 	private final String TAG = ADFHandler.class.getSimpleName();
 
 	private final Context mContext;
+	private final TangoHandler mTangoHandler;
 	private final ProtocolHandler mProtocolHandler;
 	private final long mStartTime;
 	private boolean mADFLocated = false;
@@ -36,6 +38,7 @@ public class ADFHandler {
 	public ADFHandler(final Context mContext, final TangoHandler mTangoHandler,
 					  final ProtocolHandler mProtocolHandler, final ViewGroup rootView) {
 		this.mContext = mContext;
+		this.mTangoHandler = mTangoHandler;
 		this.mProtocolHandler = mProtocolHandler;
 		mStartTime = System.currentTimeMillis();
 
@@ -77,10 +80,19 @@ public class ADFHandler {
 							mProtocolHandler.logInitialLocalization(time,timestamp);
 							mADFLocated = true;
 						}
-						float[] position = pose.getTranslationAsFloats();
+						double[] position = pose.translation;
+
+						// Get Device Position in ADF-Coordinates to calculate diff
+						TangoPoseData adfPose = mTangoHandler.getTango().getPoseAtTime(pose.timestamp,
+								Tango.COORDINATE_FRAME_ID_AREA_DESCRIPTION, Tango.COORDINATE_FRAME_ID_DEVICE);
+						double[] pos = adfPose.translation.clone();
+						pos[0]-=position[0];
+						pos[1]-=position[1];
+						pos[2]-=position[2];
+
 						mProtocolHandler.logADFLocationEvent(timestamp,
-								timeSinceLastEvent,pose.confidence,lastEventTimestamp==-1.0,
-								position[0],position[1],position[2]);
+								timeSinceLastEvent,pose.confidence,
+								position);
 						confidence.setText(Integer.toString(pose.confidence));
 						lastLocated.setText(Double.toString(timeSinceLastEvent));
 						lastEventTimestamp = pose.timestamp;
@@ -90,13 +102,11 @@ public class ADFHandler {
 		}
 		if(pose.baseFrame == TangoPoseData.COORDINATE_FRAME_AREA_DESCRIPTION
 				&& pose.targetFrame == TangoPoseData.COORDINATE_FRAME_DEVICE){
-			float[] position = pose.getTranslationAsFloats();
-			mProtocolHandler.logADFPosition(System.currentTimeMillis(),position[0],position[1],position[2]);
+			mProtocolHandler.logADFPosition(System.currentTimeMillis(),pose.translation);
 		}
 		if(pose.baseFrame == TangoPoseData.COORDINATE_FRAME_START_OF_SERVICE
 				&& pose.targetFrame == TangoPoseData.COORDINATE_FRAME_DEVICE){
-			float[] position = pose.getTranslationAsFloats();
-			mProtocolHandler.logSoSPosition(System.currentTimeMillis(),position[0],position[1],position[2]);
+			mProtocolHandler.logSoSPosition(System.currentTimeMillis(),pose.translation);
 		}
 	}
 

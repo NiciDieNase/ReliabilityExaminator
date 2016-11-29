@@ -95,34 +95,37 @@ public class ProtocolHandler {
 		}
 	}
 
-	public void logADFPosition(long systemTimestamp, double xPos, double yPos, double zPos){
+	public void logADFPosition(long systemTimestamp, double[] pos){
 		if(active){
 			try {
-				positionFW.append(String.format("%d\t%s\t%s\t%s\t\n",systemTimestamp,xPos,yPos,zPos));
+				positionFW.append(String.format("%d\t%s\t%s\t%s\t\n",systemTimestamp,pos[0],pos[1],pos[2]));
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
 		}
 	}
 
-	public void logSoSPosition(long systemTimestamp, double xPos, double yPos, double zPos){
+	public void logSoSPosition(long systemTimestamp, double[] pos){
 		if(active){
 			try {
-				positionSoSFW.append(String.format("%d\t%s\t%s\t%s\t\n",systemTimestamp,xPos,yPos,zPos));
+				positionSoSFW.append(String.format("%d\t%s\t%s\t%s\t\n",systemTimestamp,pos[0],pos[1],pos[2]));
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
 		}
 	}
 
-	public void logADFLocationEvent(long systemTimestamp, double timeSinceLastEvent, int confidence, boolean isInitialLocation,float x,float y,float z){
+	public void logADFLocationEvent(long systemTimestamp, double timeSinceLastEvent, int confidence,
+									double[] pos){
 		if(active){
 			try {
 				if(isInitialLocation){
 //					eventFW.append(String.format("#Time to first Location: \t%s\n",timeSinceLastEvent));
+					this.isInitialLocation = false;
 				} else {
-					double dist = Math.sqrt(x*x + y*y + z*z);
-					eventFW.append(String.format("%d\t%s\t%d\t%s\t%s\t%s\t%s\n",systemTimestamp,timeSinceLastEvent,confidence,x,y,z,dist));
+					double dist = Math.sqrt(pos[0]*pos[0] + pos[1]*pos[1] + pos[2]*pos[2]);
+					eventFW.append(String.format("%d\t%s\t%d\t%s\t%s\t%s\t%s\n",
+							systemTimestamp,timeSinceLastEvent,confidence,pos[0],pos[1],pos[2],dist));
 				}
 			} catch (IOException e) {
 				e.printStackTrace();
