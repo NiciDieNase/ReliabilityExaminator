@@ -9,9 +9,9 @@ import android.util.Log;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import org.apache.commons.math3.stat.descriptive.DescriptiveStatistics;
+
 import java.text.DecimalFormat;
-import java.util.LinkedList;
-import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -32,7 +32,8 @@ public class SensorHandler implements SensorEventListener{
 	private final float[] mMagnetometerReading = new float[3];
 	private final float[] mRotationMatrix = new float[9];
 	private final float[] mOrientationAngles = new float[3];
-	private List<Double> angleBuffer = new LinkedList<>();
+//	private List<Double> angleBuffer = new LinkedList<>();
+	DescriptiveStatistics angles = new DescriptiveStatistics();
 	@BindView(R.id.tv_pitch_value) protected TextView tvPitchValue;
 	private ProtocolHandler mProtocolHandler;
 
@@ -43,6 +44,7 @@ public class SensorHandler implements SensorEventListener{
 		mSensorManager = (SensorManager) mContext.getSystemService(Context.SENSOR_SERVICE);
 		mAccelerationSensor = mSensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
 		mMagnetometer = mSensorManager.getDefaultSensor(Sensor.TYPE_MAGNETIC_FIELD);
+		angles.setWindowSize(50);
 	}
 
 	@Override
@@ -64,19 +66,12 @@ public class SensorHandler implements SensorEventListener{
 		mSensorManager.getRotationMatrix(mRotationMatrix,null,mAccelerometerReading,mMagnetometerReading);
 		mSensorManager.getOrientation(mRotationMatrix,mOrientationAngles);
 		double angle = mOrientationAngles[1] * -180 / Math.PI;
-		angleBuffer.add(angle);
-		if(angleBuffer.size() > 10){
-			angleBuffer.remove(0);
-		}
-		double sum = 0.0;
-		for(double d : angleBuffer){
-			sum += d;
-		}
-		DecimalFormat format = new DecimalFormat("0.0");
-		double avg = sum / angleBuffer.size();
-		tvPitchValue.setText(String.format("%s°", avg));
+		angles.addValue(angle);
 
-		// TODO log device angle
+		DecimalFormat format = new DecimalFormat("0.0");
+		double avg = angles.getMean();
+		tvPitchValue.setText(String.format("%.1f°", avg));
+
 		mProtocolHandler.logDeviceAngle(System.currentTimeMillis(),avg);
 	}
 

@@ -119,7 +119,7 @@ public class ProtocolHandler {
 		if(active){
 			try {
 				if(isInitialLocation){
-					eventFW.append(String.format("#Time to first Location: \t%s\n",timeSinceLastEvent));
+//					eventFW.append(String.format("#Time to first Location: \t%s\n",timeSinceLastEvent));
 				} else {
 					double dist = Math.sqrt(x*x + y*y + z*z);
 					eventFW.append(String.format("%d\t%s\t%d\t%s\t%s\t%s\t%s\n",systemTimestamp,timeSinceLastEvent,confidence,x,y,z,dist));
