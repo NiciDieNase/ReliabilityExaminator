@@ -72,7 +72,9 @@ public class ProtocolHandler {
 
 	public void stopProtocol(){
 		flush();
-		if(isInitialLocation){
+		Log.d(TAG,"Stopping Protocol");
+		if(active && isInitialLocation){
+			Log.d(TAG,"Logging Localization Failure");
 			long time = logStart - System.currentTimeMillis();
 			logLocalizationFailure(time);
 		}
@@ -124,12 +126,9 @@ public class ProtocolHandler {
 
 	public void logADFLocationEvent(long systemTimestamp, double timeSinceLastEvent, int confidence,
 									double[] pos){
-		if(active){
+		if(active && timeSinceLastEvent != -1.0){
 			try {
-				if(isInitialLocation){
-//					eventFW.append(String.format("#Time to first Location: \t%s\n",timeSinceLastEvent));
-					this.isInitialLocation = false;
-				} else {
+				if(!isInitialLocation){
 					double dist = Math.sqrt(pos[0]*pos[0] + pos[1]*pos[1] + pos[2]*pos[2]);
 					eventFW.append(String.format("%d\t%s\t%d\t%s\t%s\t%s\t%s\n",
 							systemTimestamp,timeSinceLastEvent,confidence,pos[0],pos[1],pos[2],dist));
@@ -153,6 +152,7 @@ public class ProtocolHandler {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
+		this.isInitialLocation = false;
 	}
 
 	private void logLocalizationFailure(long timeToFailure) {
@@ -162,7 +162,9 @@ public class ProtocolHandler {
 			if(!file.exists()){
 				writer.append("# date\tsystem-timestamp\tadf-uuid\ttimeToFailure\n");
 			}
-			writer.append(String.format("%s\t%d\t%s\t%d\n",TIMESTAMP,uuid,timeToFailure));
+			writer.append(String.format("%s\t%s\t%d\n",TIMESTAMP,uuid,timeToFailure));
+			writer.flush();
+			writer.close();
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
