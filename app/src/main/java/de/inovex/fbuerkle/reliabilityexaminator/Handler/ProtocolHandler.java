@@ -75,7 +75,7 @@ public class ProtocolHandler {
 		Log.d(TAG,"Stopping Protocol");
 		if(active && isInitialLocation){
 			Log.d(TAG,"Logging Localization Failure");
-			long time = logStart - System.currentTimeMillis();
+			long time = System.currentTimeMillis() - logStart;
 			logLocalizationFailure(time);
 		}
 		active = false;
