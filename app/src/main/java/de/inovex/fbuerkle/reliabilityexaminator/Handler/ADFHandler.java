@@ -8,6 +8,7 @@ import android.widget.TextView;
 
 import com.google.atap.tangoservice.Tango;
 import com.google.atap.tangoservice.TangoAreaDescriptionMetaData;
+import com.google.atap.tangoservice.TangoErrorException;
 import com.google.atap.tangoservice.TangoPoseData;
 
 import butterknife.BindView;
@@ -83,12 +84,17 @@ public class ADFHandler {
 						double[] position = pose.translation;
 
 						// Get Device Position in ADF-Coordinates to calculate diff
-						TangoPoseData adfPose = mTangoHandler.getTango().getPoseAtTime(pose.timestamp,
-								Tango.COORDINATE_FRAME_ID_AREA_DESCRIPTION, Tango.COORDINATE_FRAME_ID_DEVICE);
-						double[] pos = adfPose.translation.clone();
-						pos[0]-=position[0];
-						pos[1]-=position[1];
-						pos[2]-=position[2];
+						try{
+
+							TangoPoseData adfPose = mTangoHandler.getTango().getPoseAtTime(pose.timestamp,
+									Tango.COORDINATE_FRAME_ID_AREA_DESCRIPTION, Tango.COORDINATE_FRAME_ID_DEVICE);
+							double[] pos = adfPose.translation.clone();
+							pos[0]-=position[0];
+							pos[1]-=position[1];
+							pos[2]-=position[2];
+						} catch (TangoErrorException e){
+							e.printStackTrace();
+						}
 
 						mProtocolHandler.logADFLocationEvent(timestamp,
 								timeSinceLastEvent,pose.confidence,
