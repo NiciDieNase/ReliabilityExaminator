@@ -72,10 +72,13 @@ public class ExaminatorActivity extends AppCompatActivity implements SelectADFDi
 			this.uuid = extras.getString(KEY_UUID,"");
 			this.arealearning = extras.getBoolean(KEY_AREALEARNING,false);
 		}
-		if(!this.arealearning){
+		mProtocolHandler = new ProtocolHandler();
+		if(this.arealearning){
+			Snackbar.make(rootView, "Starting Area Learning",Snackbar.LENGTH_SHORT).show();
+			mProtocolHandler.startProtocol("learning");
+		} else {
 			fabSave.hide();
 		}
-		mProtocolHandler = new ProtocolHandler();
 		if(uuid != ""){
 			Snackbar.make(rootView, "Started with ADF: "+uuid,Snackbar.LENGTH_SHORT).show();
 			mProtocolHandler.startProtocol(uuid);
