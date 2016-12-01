@@ -1,9 +1,11 @@
 package de.inovex.fbuerkle.reliabilityexaminator.Handler;
 
+import android.app.Activity;
 import android.content.Context;
 import android.opengl.GLSurfaceView;
 import android.util.Log;
 import android.view.ViewGroup;
+import android.widget.TextView;
 
 import com.google.atap.tango.ux.TangoUx;
 import com.google.atap.tango.ux.TangoUxLayout;
@@ -35,6 +37,7 @@ public class TangoHandler {
 	private ADFHandler mADFHandler;
 	private final TangoUx mTangoUx;
 	private ProtocolHandler mProtocolHandler;
+	private boolean areaLearning;
 
 	public String getUuid() {
 		return uuid;
@@ -50,13 +53,15 @@ public class TangoHandler {
 	@BindView(R.id.layout_tango) TangoUxLayout mTangoUxLayout;
 	@BindView(R.id.top_preview) GLSurfaceView rgbView;
 	@BindView(R.id.bottom_preview) GLSurfaceView fisheyeView;
+	@BindView(R.id.tv_distance_value) TextView distance;
 
-	public TangoHandler(Context context, ViewGroup view, String uuid,ProtocolHandler mProtocolHandler) {
+	public TangoHandler(Context context, ViewGroup view, String uuid, boolean areaLearning, ProtocolHandler mProtocolHandler) {
 		this.mContext = context;
 		rootView = view;
 		this.uuid = uuid;
 		this.mProtocolHandler = mProtocolHandler;
 		ButterKnife.bind(this, view);
+		this.areaLearning = areaLearning;
 
 		mTangoUx = new TangoUx(mContext);
 		mTangoUx.setLayout(mTangoUxLayout);
@@ -98,6 +103,10 @@ public class TangoHandler {
 				if (null != mTangoUx) {
 					mTangoUx.updateTangoEvent(tangoEvent);
 				}
+				if(tangoEvent.eventType == TangoEvent.EVENT_AREA_LEARNING
+						&& tangoEvent.eventKey == TangoEvent.KEY_AREA_DESCRIPTION_SAVE_PROGRESS){
+					Log.d(TAG, "Area Learning Update");
+				}
 			}
 
 			@Override
@@ -127,6 +136,11 @@ public class TangoHandler {
 		config.putBoolean(TangoConfig.KEY_BOOLEAN_MOTIONTRACKING,true);
 		if(this.uuid != null && this.uuid != ""){
 			config.putString(TangoConfig.KEY_STRING_AREADESCRIPTION,uuid);
+			Log.d(TAG,"Loading ADF: " + uuid);
+		}
+		if(this.areaLearning){
+			config.putBoolean(TangoConfig.KEY_BOOLEAN_LEARNINGMODE, true);
+			Log.d(TAG,"Enabling Area Learning");
 		}
 		return config;
 	}
@@ -194,5 +208,9 @@ public class TangoHandler {
 
 	public void takeScreenshot(){
 		mCameraHandler.takeScreenshots();
+	}
+
+	public void saveADF() {
+		mTango.saveAreaDescription();
 	}
 }

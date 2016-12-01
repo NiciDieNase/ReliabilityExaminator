@@ -16,4 +16,7 @@
     <item
         android:id="@+id/action_stop_protocol"
         android:title="Stop Protocol"/>
+    <item
+        android:id="@+id/action_start_arealearning"
+        android:title="Start Area Learning"/>
 </menu>

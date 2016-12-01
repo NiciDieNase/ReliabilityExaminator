@@ -26,15 +26,17 @@ public class ExaminatorActivity extends AppCompatActivity implements SelectADFDi
 
 	private static final String TAG = ExaminatorActivity.class.getSimpleName();
 	public static final String KEY_UUID = "uuid";
+	public static final String KEY_AREALEARNING = "arealearning";
 
 	private SensorHandler mSensorHandler;
 	private TangoHandler mTangoHandler;
 	private ProtocolHandler mProtocolHandler;
 	@BindView(R.id.layout_tango) ViewGroup rootView;
 	@BindView(R.id.toolbar) Toolbar toolbar;
-	@BindView(R.id.fab) FloatingActionButton fab;
-//	@BindView(R.id.fab_screenshot) FloatingActionButton fabScreenshot;
+	@BindView(R.id.fab_log) FloatingActionButton fabLog;
+	@BindView(R.id.fab_save) FloatingActionButton fabSave;
 	private String uuid;
+	private boolean arealearning;
 
 	enum ADFaction{undef, export, load;}
 	ADFaction mADFaction = ADFaction.undef;
@@ -45,40 +47,44 @@ public class ExaminatorActivity extends AppCompatActivity implements SelectADFDi
 		setContentView(R.layout.activity_main);
 		ButterKnife.bind(this);
 		setSupportActionBar(toolbar);
-		fab.setOnClickListener(new View.OnClickListener() {
+		fabLog.setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View view) {
 				mProtocolHandler.startProtocol(uuid);
 				mTangoHandler.takeScreenshot();
-				fab.hide();
+				fabLog.hide();
 			}
 		});
-//		fabScreenshot.setOnClickListener(new View.OnClickListener() {
-//			@Override
-//			public void onClick(View view) {
-//				mTangoHandler.takeScreenshot();
-//			}
-//		});
+		fabSave.setOnClickListener(new View.OnClickListener() {
+			@Override
+			public void onClick(View view) {
+				mTangoHandler.saveADF();
+			}
+		});
 
 		startActivityForResult(
 				Tango.getRequestPermissionIntent(Tango.PERMISSIONTYPE_ADF_LOAD_SAVE),
 				Tango.TANGO_INTENT_ACTIVITYCODE);
 
 		Bundle extras = getIntent().getExtras();
-		uuid = "";
+		this.uuid = "";
 		if(extras != null){
-			uuid = extras.getString(KEY_UUID,"");
+			this.uuid = extras.getString(KEY_UUID,"");
+			this.arealearning = extras.getBoolean(KEY_AREALEARNING,false);
+		}
+		if(!this.arealearning){
+			fabSave.hide();
 		}
 		mProtocolHandler = new ProtocolHandler();
 		if(uuid != ""){
 			Snackbar.make(rootView, "Started with ADF: "+uuid,Snackbar.LENGTH_SHORT).show();
 			mProtocolHandler.startProtocol(uuid);
 //			mTangoHandler.takeScreenshot();
-			fab.hide();
+			fabLog.hide();
 		}
 
 		mSensorHandler = new SensorHandler(this, rootView, mProtocolHandler);
-		mTangoHandler = new TangoHandler(this, rootView, uuid, mProtocolHandler);
+		mTangoHandler = new TangoHandler(this, rootView, uuid, arealearning, mProtocolHandler);
 	}
 
 
@@ -126,6 +132,9 @@ public class ExaminatorActivity extends AppCompatActivity implements SelectADFDi
 			case R.id.action_stop_protocol:
 				mProtocolHandler.stopProtocol();
 				return true;
+			case R.id.action_start_arealearning:
+				startArealearning();
+				return true;
 		}
 		return super.onOptionsItemSelected(item);
 	}
@@ -150,5 +159,15 @@ public class ExaminatorActivity extends AppCompatActivity implements SelectADFDi
 		i.putExtra(KEY_UUID,uuid);
 		startActivity(i);
 		this.finish();
+	}
+
+	private void startArealearning(){
+		Intent i = new Intent(this, ExaminatorActivity.class);
+		if(this.uuid != ""){
+			i.putExtra(KEY_UUID,uuid);
+		}
+		i.putExtra(KEY_AREALEARNING,true);
+		startActivity(i);
+		finish();
 	}
 }

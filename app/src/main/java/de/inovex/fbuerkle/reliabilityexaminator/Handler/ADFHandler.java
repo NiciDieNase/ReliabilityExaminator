@@ -26,13 +26,13 @@ public class ADFHandler {
 	private final TangoHandler mTangoHandler;
 	private final ProtocolHandler mProtocolHandler;
 	private final long mStartTime;
+	private final String uuid;
 	private boolean mADFLocated = false;
 	@BindView(R.id.tv_adf_status_value) TextView adfStatus;
 	@BindView(R.id.tv_adf_name_value) TextView adfName;
 	@BindView(R.id.tv_adf_id_value) TextView adfId;
 	@BindView(R.id.tv_adf_located_value) TextView located;
 	@BindView(R.id.tv_adf_lastlocated_value) TextView lastLocated;
-	@BindView(R.id.tv_distance_value) TextView distance;
 	@BindView(R.id.tv_adf_located_time) TextView adfTime;
 	private double lastEventTimestamp = -1.0;
 
@@ -43,7 +43,7 @@ public class ADFHandler {
 		this.mProtocolHandler = mProtocolHandler;
 		mStartTime = System.currentTimeMillis();
 
-		final String uuid = mTangoHandler.getUuid();
+		uuid = mTangoHandler.getUuid();
 		Log.d(TAG,uuid != null ? uuid : "No ADF");
 		if(uuid != null && uuid != ""){
 			((Activity)mContext).runOnUiThread(new Runnable() {
@@ -74,7 +74,7 @@ public class ADFHandler {
 							timeSinceLastEvent = pose.timestamp-lastEventTimestamp;
 						}
 						long timestamp = System.currentTimeMillis();
-						if(!mADFLocated){
+						if(!mADFLocated && "" != uuid){
 							located.setText(R.string.yes);
 							long time = timestamp - mStartTime;
 							adfTime.setText(Long.toString(time) + " ms");
@@ -99,7 +99,9 @@ public class ADFHandler {
 						mProtocolHandler.logADFLocationEvent(timestamp,
 								timeSinceLastEvent,pose.confidence,
 								position);
-						lastLocated.setText(Double.toString(timeSinceLastEvent));
+						if("" != uuid){
+							lastLocated.setText(Double.toString(timeSinceLastEvent));
+						}
 						lastEventTimestamp = pose.timestamp;
 					}
 				}
