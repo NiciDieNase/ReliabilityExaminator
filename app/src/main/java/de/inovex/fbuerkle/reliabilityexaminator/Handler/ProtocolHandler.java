@@ -2,6 +2,8 @@ package de.inovex.fbuerkle.reliabilityexaminator.Handler;
 
 import android.util.Log;
 
+import com.google.atap.tangoservice.TangoPoseData;
+
 import org.joda.time.DateTime;
 
 import java.io.File;
@@ -26,6 +28,13 @@ public class ProtocolHandler {
 	private String path;
 	private boolean isInitialLocation = true;
 	private long logStart;
+	private TangoPoseData lastPose;
+
+	public double getDistanceTraveled() {
+		return distanceTraveled;
+	}
+
+	private double distanceTraveled = 0.0;
 
 	public void startProtocol(String uuid){
 		this.uuid = uuid;
@@ -146,13 +155,27 @@ public class ProtocolHandler {
 			if(!file.exists()){
 				writer.append("# date\tsystem-timestamp\tadf-uuid\ttime-to-localization\n");
 			}
-			writer.append(String.format("%s\t%d\t%s\t%d\n",TIMESTAMP,timestamp,uuid,timeToLocalization));
+			writer.append(String.format("%s\t%d\t%s\t%d\t%s\n",TIMESTAMP,timestamp,uuid,timeToLocalization,distanceTraveled));
 			writer.flush();
 			writer.close();
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
 		this.isInitialLocation = false;
+	}
+
+	public void updateDistanceTraveled(TangoPoseData pose){
+		if(pose.baseFrame == TangoPoseData.COORDINATE_FRAME_START_OF_SERVICE
+				&& pose.targetFrame == TangoPoseData.COORDINATE_FRAME_DEVICE){
+			if(null != this.lastPose){
+				double x = pose.translation[0] - lastPose.translation[0];
+				double y = pose.translation[1] - lastPose.translation[1];
+				double z = pose.translation[2] - lastPose.translation[2];
+				double distance = Math.sqrt(x*x + y*y + z*z);
+				this.distanceTraveled += distance;
+			}
+			this.lastPose = pose;
+		}
 	}
 
 	private void logLocalizationFailure(long timeToFailure) {
@@ -162,7 +185,7 @@ public class ProtocolHandler {
 			if(!file.exists()){
 				writer.append("# date\tsystem-timestamp\tadf-uuid\ttimeToFailure\n");
 			}
-			writer.append(String.format("%s\t%s\t%d\n",TIMESTAMP,uuid,timeToFailure));
+			writer.append(String.format("%s\t%s\t%d\t%s\n",TIMESTAMP,uuid,timeToFailure,distanceTraveled));
 			writer.flush();
 			writer.close();
 		} catch (IOException e) {

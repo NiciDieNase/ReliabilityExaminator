@@ -137,10 +137,10 @@
         app:layout_constraintTop_toTopOf="@+id/tv_adf_located_label"/>
 
     <TextView
-        android:text="@string/confidence"
+        android:text="@string/distance"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:id="@+id/tv_adf_confidence_label"
+        android:id="@+id/tv_distance_label"
         app:layout_constraintTop_toBottomOf="@+id/tv_adf_lastlocated_label"
         app:layout_constraintLeft_toLeftOf="@+id/tv_adf_lastlocated_label"
         android:layout_marginTop="8dp"/>
@@ -149,9 +149,9 @@
         android:text="@string/empty_value"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:id="@+id/tv_adf_confidence_value"
+        android:id="@+id/tv_distance_value"
         app:layout_constraintLeft_toLeftOf="@+id/tv_adf_lastlocated_value"
-        app:layout_constraintTop_toTopOf="@+id/tv_adf_confidence_label"/>
+        app:layout_constraintTop_toTopOf="@+id/tv_distance_label"/>
 
     <TextView
         android:text="@string/empty_value"

@@ -32,7 +32,7 @@ public class ADFHandler {
 	@BindView(R.id.tv_adf_id_value) TextView adfId;
 	@BindView(R.id.tv_adf_located_value) TextView located;
 	@BindView(R.id.tv_adf_lastlocated_value) TextView lastLocated;
-	@BindView(R.id.tv_adf_confidence_value) TextView confidence;
+	@BindView(R.id.tv_distance_value) TextView distance;
 	@BindView(R.id.tv_adf_located_time) TextView adfTime;
 	private double lastEventTimestamp = -1.0;
 
@@ -99,7 +99,6 @@ public class ADFHandler {
 						mProtocolHandler.logADFLocationEvent(timestamp,
 								timeSinceLastEvent,pose.confidence,
 								position);
-						confidence.setText(Integer.toString(pose.confidence));
 						lastLocated.setText(Double.toString(timeSinceLastEvent));
 						lastEventTimestamp = pose.timestamp;
 					}

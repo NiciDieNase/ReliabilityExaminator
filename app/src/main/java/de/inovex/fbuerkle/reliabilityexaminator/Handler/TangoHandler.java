@@ -72,6 +72,13 @@ public class TangoHandler {
 					mTangoUx.updatePoseStatus(tangoPoseData.statusCode);
 				}
 				mADFHandler.onPoseAvailable(tangoPoseData);
+				mProtocolHandler.updateDistanceTraveled(tangoPoseData);
+				((Activity)mContext).runOnUiThread(new Runnable() {
+					@Override
+					public void run() {
+						distance.setText(String.format("%.2f m",mProtocolHandler.getDistanceTraveled()));
+					}
+				});
 			}
 
 			@Override
