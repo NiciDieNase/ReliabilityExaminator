@@ -8,7 +8,7 @@
     <string name="no_adfs_tango_error">No ADF UUIDs</string>
     <string name="device_pitch">Device Pitch:</string>
     <string name="pitch_default_string">0°</string>
-    <string name="adf_loaded">ADF loaded:</string>
+    <string name="adf_status">ADF Status:</string>
     <string name="no">No</string>
     <string name="adf_name">ADF Name:</string>
     <string name="empty_value">-</string>
@@ -19,4 +19,10 @@
     <string name="adf_located">ADF located:</string>
     <string name="yes">Yes</string>
     <string name="distance">Distance:</string>
+    <string name="adf_status_loaded">ADF loaded</string>
+    <string name="adf_status_extending">extending ADF</string>
+    <string name="adf_status_learning">learning new ADF</string>
+    <string name="adf_status_located">located with ADF</string>
+    <string name="adf_status_notlocated">No located</string>
+    <string name="adf_status_noadf">No ADF Loaded</string>
 </resources>

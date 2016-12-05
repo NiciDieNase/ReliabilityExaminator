@@ -11,6 +11,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 
 import com.google.atap.tangoservice.Tango;
 
@@ -35,6 +36,7 @@ public class ExaminatorActivity extends AppCompatActivity implements SelectADFDi
 	@BindView(R.id.toolbar) Toolbar toolbar;
 	@BindView(R.id.fab_log) FloatingActionButton fabLog;
 	@BindView(R.id.fab_save) FloatingActionButton fabSave;
+	@BindView(R.id.tv_adf_status_value) TextView adfStatus;
 	private String uuid;
 	private boolean arealearning;
 
@@ -72,13 +74,13 @@ public class ExaminatorActivity extends AppCompatActivity implements SelectADFDi
 			this.uuid = extras.getString(KEY_UUID,"");
 			this.arealearning = extras.getBoolean(KEY_AREALEARNING,false);
 		}
+
 		mProtocolHandler = new ProtocolHandler();
 		if(this.arealearning){
 			Snackbar.make(rootView, "Starting Area Learning",Snackbar.LENGTH_SHORT).show();
 			mProtocolHandler.startProtocol("learning");
-		} else {
-			fabSave.hide();
 		}
+		fabSave.hide();
 		if(uuid != ""){
 			Snackbar.make(rootView, "Started with ADF: "+uuid,Snackbar.LENGTH_SHORT).show();
 			mProtocolHandler.startProtocol(uuid);

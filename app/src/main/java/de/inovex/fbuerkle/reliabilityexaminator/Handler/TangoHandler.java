@@ -191,9 +191,13 @@ public class TangoHandler {
 		}
 	}
 
-
 	public boolean isConnected() {
 		return mIsConnected;
+	}
+
+
+	public boolean isAreaLearning() {
+		return areaLearning;
 	}
 
 	public Tango getTango() {

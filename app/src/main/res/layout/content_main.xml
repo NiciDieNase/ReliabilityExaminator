@@ -52,7 +52,7 @@
         app:layout_constraintTop_toTopOf="@+id/tv_pitch_label"/>
 
     <TextView
-        android:text="@string/adf_loaded"
+        android:text="@string/adf_status"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/tv_adf_status_label"
@@ -61,7 +61,7 @@
         app:layout_constraintTop_toBottomOf="@+id/tv_pitch_label"/>
 
     <TextView
-        android:text="@string/no"
+        android:text="@string/adf_status_notlocated"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/tv_adf_status_value"
@@ -69,10 +69,10 @@
         app:layout_constraintLeft_toLeftOf="@+id/tv_pitch_value"/>
 
     <TextView
+        android:id="@+id/tv_adf_name_label"
         android:text="@string/adf_name"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:id="@+id/tv_adf_name_label"
         app:layout_constraintLeft_toLeftOf="@+id/tv_adf_status_label"
         android:layout_marginTop="8dp"
         app:layout_constraintTop_toBottomOf="@+id/tv_adf_status_label"/>
@@ -120,10 +120,10 @@
         app:layout_constraintLeft_toLeftOf="@+id/tv_adf_located_value"/>
 
     <TextView
+        android:id="@+id/tv_adf_located_label"
         android:text="@string/adf_located"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:id="@+id/tv_adf_located_label"
         app:layout_constraintLeft_toLeftOf="@+id/tv_adf_id_label"
         android:layout_marginTop="8dp"
         app:layout_constraintTop_toBottomOf="@+id/tv_adf_id_label"/>

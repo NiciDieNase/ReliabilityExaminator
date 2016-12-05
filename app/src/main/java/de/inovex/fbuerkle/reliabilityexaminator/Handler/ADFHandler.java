@@ -2,6 +2,8 @@ package de.inovex.fbuerkle.reliabilityexaminator.Handler;
 
 import android.app.Activity;
 import android.content.Context;
+import android.support.design.widget.FloatingActionButton;
+import android.support.design.widget.Snackbar;
 import android.util.Log;
 import android.view.ViewGroup;
 import android.widget.TextView;
@@ -9,6 +11,7 @@ import android.widget.TextView;
 import com.google.atap.tangoservice.Tango;
 import com.google.atap.tangoservice.TangoAreaDescriptionMetaData;
 import com.google.atap.tangoservice.TangoErrorException;
+import com.google.atap.tangoservice.TangoException;
 import com.google.atap.tangoservice.TangoPoseData;
 
 import butterknife.BindView;
@@ -25,6 +28,7 @@ public class ADFHandler {
 	private final Context mContext;
 	private final TangoHandler mTangoHandler;
 	private final ProtocolHandler mProtocolHandler;
+	private ViewGroup rootView;
 	private final long mStartTime;
 	private final String uuid;
 	private boolean mADFLocated = false;
@@ -34,6 +38,7 @@ public class ADFHandler {
 	@BindView(R.id.tv_adf_located_value) TextView located;
 	@BindView(R.id.tv_adf_lastlocated_value) TextView lastLocated;
 	@BindView(R.id.tv_adf_located_time) TextView adfTime;
+	@BindView(R.id.fab_save) FloatingActionButton fabSave;
 	private double lastEventTimestamp = -1.0;
 
 	public ADFHandler(final Context mContext, final TangoHandler mTangoHandler,
@@ -41,7 +46,9 @@ public class ADFHandler {
 		this.mContext = mContext;
 		this.mTangoHandler = mTangoHandler;
 		this.mProtocolHandler = mProtocolHandler;
+		this.rootView = rootView;
 		mStartTime = System.currentTimeMillis();
+
 
 		uuid = mTangoHandler.getUuid();
 		Log.d(TAG,uuid != null ? uuid : "No ADF");
@@ -50,15 +57,31 @@ public class ADFHandler {
 				@Override
 				public void run() {
 					ButterKnife.bind(ADFHandler.this,rootView);
-					adfStatus.setText(R.string.yes);
+					adfStatus.setText(R.string.adf_status_loaded);
 					adfId.setText(uuid);
 					byte[] bytes = mTangoHandler.getTango()
 							.loadAreaDescriptionMetaData(uuid).get(TangoAreaDescriptionMetaData.KEY_NAME);
 					String name = bytes != null ? new String(bytes) : "<no_name_found>";
 					adfName.setText(name);
+					if(mTangoHandler.isAreaLearning()){
+						if(uuid == ""){
+							adfStatus.setText(R.string.adf_status_learning);
+						} else {
+							adfStatus.setText(R.string.adf_status_extending);
+						}
+					} else {
+						if (uuid == ""){
+							adfStatus.setText(R.string.adf_status_noadf);
+						} else {
+							adfStatus.setText(R.string.adf_status_loaded);
+						}
+					}
 				}
 			});
 		}
+
+
+
 		Log.d(TAG,"ADF Handler Started");
 	}
 
@@ -80,12 +103,14 @@ public class ADFHandler {
 							adfTime.setText(Long.toString(time) + " ms");
 							mProtocolHandler.logInitialLocalization(time,timestamp);
 							mADFLocated = true;
+							if(mTangoHandler.isAreaLearning()){
+								fabSave.show();
+							}
 						}
 						double[] position = pose.translation;
 
 						// Get Device Position in ADF-Coordinates to calculate diff
 						try{
-
 							TangoPoseData adfPose = mTangoHandler.getTango().getPoseAtTime(pose.timestamp,
 									Tango.COORDINATE_FRAME_ID_AREA_DESCRIPTION, Tango.COORDINATE_FRAME_ID_DEVICE);
 							double[] pos = adfPose.translation.clone();
