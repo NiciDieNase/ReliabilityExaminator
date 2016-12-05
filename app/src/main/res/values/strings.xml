@@ -23,6 +23,6 @@
     <string name="adf_status_extending">extending ADF</string>
     <string name="adf_status_learning">learning new ADF</string>
     <string name="adf_status_located">located with ADF</string>
-    <string name="adf_status_notlocated">No located</string>
+    <string name="adf_status_notlocated">Not located</string>
     <string name="adf_status_noadf">No ADF Loaded</string>
 </resources>

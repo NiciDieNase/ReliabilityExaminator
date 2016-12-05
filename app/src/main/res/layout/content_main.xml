@@ -61,7 +61,7 @@
         app:layout_constraintTop_toBottomOf="@+id/tv_pitch_label"/>
 
     <TextView
-        android:text="@string/adf_status_notlocated"
+        android:text="@string/adf_status_noadf"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/tv_adf_status_value"
@@ -95,7 +95,7 @@
         app:layout_constraintTop_toBottomOf="@+id/tv_adf_name_value"/>
 
     <TextView
-        android:text="@string/adf_id_default"
+        android:text="@string/empty_value"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/tv_adf_id_value"

@@ -197,11 +197,11 @@ public class ProtocolHandler {
 	public void flush(){
 		try {
 			if(angleFW != null)
-			angleFW.flush();
+				angleFW.flush();
 			if(eventFW != null)
-			eventFW.flush();
+				eventFW.flush();
 			if(positionFW != null)
-			positionFW.flush();
+				positionFW.flush();
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
