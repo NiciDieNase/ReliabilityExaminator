@@ -37,6 +37,7 @@ public class TangoHandler {
 	private ADFHandler mADFHandler;
 	private final TangoUx mTangoUx;
 	private ProtocolHandler mProtocolHandler;
+
 	private boolean areaLearning;
 
 	public String getUuid() {
@@ -44,17 +45,17 @@ public class TangoHandler {
 	}
 
 	private ViewGroup rootView;
-	private final String uuid;
 
+	private final String uuid;
 	private boolean mIsConnected = false;
+
 	private Tango mTango;
 	private TangoConfig mConfig;
-
 	@BindView(R.id.layout_tango) TangoUxLayout mTangoUxLayout;
+
 	@BindView(R.id.top_preview) GLSurfaceView rgbView;
 	@BindView(R.id.bottom_preview) GLSurfaceView fisheyeView;
 	@BindView(R.id.tv_distance_value) TextView distance;
-
 	public TangoHandler(Context context, ViewGroup view, String uuid, boolean areaLearning, ProtocolHandler mProtocolHandler) {
 		this.mContext = context;
 		rootView = view;
@@ -166,6 +167,8 @@ public class TangoHandler {
 						}
 					} catch (TangoInvalidException e){
 						Log.d(TAG, "TangoInvalidException" + e.getMessage());
+					} catch (TangoErrorException e){
+						e.printStackTrace();
 					}
 					mIsConnected = true;
 					mCameraHandler.connectCamera();
@@ -214,7 +217,18 @@ public class TangoHandler {
 		mCameraHandler.takeScreenshots();
 	}
 
+	public String generateADFName(){
+		// Build String
+		StringBuilder builder = new StringBuilder();
+		builder.append(mProtocolHandler.TIMESTAMP).append(" ");
+		builder.append(mProtocolHandler.getDistanceTraveled());
+		if(uuid != ""){
+			builder.append(" ").append("extends ").append(uuid);
+		}
+		return builder.toString();
+	}
+
 	public void saveADF() {
-		mTango.saveAreaDescription();
+		mADFHandler.saveADF();
 	}
 }

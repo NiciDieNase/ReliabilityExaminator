@@ -143,4 +143,22 @@ public class ADFHandler {
 	}
 
 
+	public void saveADF() {
+		if(mTangoHandler.isAreaLearning()){
+			try{
+				Tango tango = mTangoHandler.getTango();
+				String newUUID = tango.saveAreaDescription();
+				Snackbar.make(rootView,"Saved ADF " + newUUID,Snackbar.LENGTH_SHORT);
+				// name ADF
+				TangoAreaDescriptionMetaData metadata = new TangoAreaDescriptionMetaData();
+				metadata = tango.loadAreaDescriptionMetaData(uuid);
+				metadata.set(TangoAreaDescriptionMetaData.KEY_NAME, mTangoHandler.generateADFName().getBytes());
+				tango.saveAreaDescriptionMetadata(uuid, metadata);
+			} catch (TangoException e){
+				e.printStackTrace();
+			} finally {
+				// restart activity without arealearning?
+			}
+		}
+	}
 }
