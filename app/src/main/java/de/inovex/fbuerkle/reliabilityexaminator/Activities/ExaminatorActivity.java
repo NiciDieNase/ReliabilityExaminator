@@ -11,6 +11,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.google.atap.tangoservice.Tango;
@@ -37,12 +38,13 @@ public class ExaminatorActivity extends AppCompatActivity implements SelectADFDi
 	@BindView(R.id.fab_log) FloatingActionButton fabLog;
 	@BindView(R.id.fab_save) FloatingActionButton fabSave;
 	@BindView(R.id.tv_adf_status_value) TextView adfStatus;
+	@BindView(R.id.progressBar) ProgressBar progressBar;
 	private String uuid;
 	private boolean arealearning;
 
 	enum ADFaction{undef, export, load;}
-	ADFaction mADFaction = ADFaction.undef;
 
+	ADFaction mADFaction = ADFaction.undef;
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -92,13 +94,13 @@ public class ExaminatorActivity extends AppCompatActivity implements SelectADFDi
 		mTangoHandler = new TangoHandler(this, rootView, uuid, arealearning, mProtocolHandler);
 	}
 
-
 	@Override
 	protected void onResume() {
 		super.onResume();
 		mTangoHandler.onResume();
 		mSensorHandler.onResume();
 	}
+
 
 	@Override
 	protected void onPause() {
@@ -159,7 +161,7 @@ public class ExaminatorActivity extends AppCompatActivity implements SelectADFDi
 		mADFaction = ADFaction.undef;
 	}
 
-	private void loadADF(String uuid) {
+	public void loadADF(String uuid) {
 		Intent i = new Intent(this, ExaminatorActivity.class);
 		i.putExtra(KEY_UUID,uuid);
 		startActivity(i);
@@ -174,5 +176,15 @@ public class ExaminatorActivity extends AppCompatActivity implements SelectADFDi
 		i.putExtra(KEY_AREALEARNING,true);
 		startActivity(i);
 		finish();
+	}
+
+	public void showLoadingDialog(){
+		progressBar.setIndeterminate(true);
+		progressBar.setVisibility(View.VISIBLE);
+	}
+
+	public void hideLoadingDialog(){
+		progressBar.setVisibility(View.GONE);
+
 	}
 }

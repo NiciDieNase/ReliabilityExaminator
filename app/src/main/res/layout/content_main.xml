@@ -162,4 +162,13 @@
         android:layout_marginStart="8dp"
         app:layout_constraintLeft_toRightOf="@+id/tv_adf_located_value"/>
 
+    <ProgressBar
+        style="?android:attr/progressBarStyle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        tools:layout_editor_absoluteY="214dp"
+        tools:layout_editor_absoluteX="465dp"
+        android:id="@+id/progressBar"
+        android:visibility="gone"/>
+
 </android.support.constraint.ConstraintLayout>

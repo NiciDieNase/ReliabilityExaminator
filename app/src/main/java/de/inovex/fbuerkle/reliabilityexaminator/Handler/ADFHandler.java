@@ -14,8 +14,13 @@ import com.google.atap.tangoservice.TangoErrorException;
 import com.google.atap.tangoservice.TangoException;
 import com.google.atap.tangoservice.TangoPoseData;
 
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
+
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import de.inovex.fbuerkle.reliabilityexaminator.Activities.ExaminatorActivity;
 import de.inovex.fbuerkle.reliabilityexaminator.R;
 
 /**
@@ -49,39 +54,36 @@ public class ADFHandler {
 		this.rootView = rootView;
 		mStartTime = System.currentTimeMillis();
 
-
 		uuid = mTangoHandler.getUuid();
 		Log.d(TAG,uuid != null ? uuid : "No ADF");
-		if(uuid != null && uuid != ""){
-			((Activity)mContext).runOnUiThread(new Runnable() {
-				@Override
-				public void run() {
-					ButterKnife.bind(ADFHandler.this,rootView);
+		((Activity)mContext).runOnUiThread(new Runnable() {
+			@Override
+			public void run() {
+				ButterKnife.bind(ADFHandler.this, rootView);
+				if (uuid != null && uuid != "") {
 					adfStatus.setText(R.string.adf_status_loaded);
 					adfId.setText(uuid);
 					byte[] bytes = mTangoHandler.getTango()
 							.loadAreaDescriptionMetaData(uuid).get(TangoAreaDescriptionMetaData.KEY_NAME);
 					String name = bytes != null ? new String(bytes) : "<no_name_found>";
 					adfName.setText(name);
-					if(mTangoHandler.isAreaLearning()){
-						if(uuid == ""){
-							adfStatus.setText(R.string.adf_status_learning);
-						} else {
-							adfStatus.setText(R.string.adf_status_extending);
-						}
+				}
+				if(mTangoHandler.isAreaLearning() && adfStatus != null){
+					if(uuid == ""){
+						adfStatus.setText(R.string.adf_status_learning);
+						fabSave.show();
 					} else {
-						if (uuid == ""){
-							adfStatus.setText(R.string.adf_status_noadf);
-						} else {
-							adfStatus.setText(R.string.adf_status_loaded);
-						}
+						adfStatus.setText(R.string.adf_status_extending);
+					}
+				} else {
+					if (uuid == ""){
+						adfStatus.setText(R.string.adf_status_noadf);
+					} else {
+						adfStatus.setText(R.string.adf_status_loaded);
 					}
 				}
-			});
-		}
-
-
-
+			}
+		});
 		Log.d(TAG,"ADF Handler Started");
 	}
 
@@ -145,19 +147,40 @@ public class ADFHandler {
 
 	public void saveADF() {
 		if(mTangoHandler.isAreaLearning()){
+			String newUUID = "";
 			try{
 				Tango tango = mTangoHandler.getTango();
-				String newUUID = tango.saveAreaDescription();
-				Snackbar.make(rootView,"Saved ADF " + newUUID,Snackbar.LENGTH_SHORT);
+				((ExaminatorActivity)mContext).showLoadingDialog();
+				newUUID = tango.saveAreaDescription();
+				((ExaminatorActivity)mContext).hideLoadingDialog();
 				// name ADF
-				TangoAreaDescriptionMetaData metadata = new TangoAreaDescriptionMetaData();
-				metadata = tango.loadAreaDescriptionMetaData(uuid);
-				metadata.set(TangoAreaDescriptionMetaData.KEY_NAME, mTangoHandler.generateADFName().getBytes());
-				tango.saveAreaDescriptionMetadata(uuid, metadata);
+				String adfInfo = mTangoHandler.generateADFName();
+				// TODO Access to Metadata causes SIGSEGV
+//				try{
+//					TangoAreaDescriptionMetaData metadata = tango.loadAreaDescriptionMetaData(uuid);
+//					metadata.set(TangoAreaDescriptionMetaData.KEY_NAME, adfInfo.getBytes());
+//					tango.saveAreaDescriptionMetadata(uuid, metadata);
+//				} catch (Throwable t){
+//					t.printStackTrace();
+//				}
+				File metadata = new File("/storage/emulated/legacy/reliabilityexaminator/adfMetadata.csv");
+				FileWriter metaDataWriter = new FileWriter(metadata);
+				if(!metadata.exists() || !metadata.isFile()){
+					metadata.createNewFile();
+				}
+				if(metadata.length() < 1){
+					metaDataWriter.write("# uuid\ttimestamp\tdistance\textends\n");
+				}
+				metaDataWriter.append(uuid).append("\t").append(adfInfo);
+				metaDataWriter.flush();
+				metaDataWriter.close();
+				Snackbar.make(rootView,"Saved ADF "+ adfInfo.replace("\t"," ") + " " + newUUID,Snackbar.LENGTH_SHORT).show();
 			} catch (TangoException e){
 				e.printStackTrace();
+			} catch (IOException e) {
+				e.printStackTrace();
 			} finally {
-				// restart activity without arealearning?
+				((ExaminatorActivity)mContext).loadADF(newUUID);
 			}
 		}
 	}

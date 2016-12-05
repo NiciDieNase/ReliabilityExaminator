@@ -220,10 +220,10 @@ public class TangoHandler {
 	public String generateADFName(){
 		// Build String
 		StringBuilder builder = new StringBuilder();
-		builder.append(mProtocolHandler.TIMESTAMP).append(" ");
+		builder.append(mProtocolHandler.TIMESTAMP).append("\t");
 		builder.append(mProtocolHandler.getDistanceTraveled());
-		if(uuid != ""){
-			builder.append(" ").append("extends ").append(uuid);
+		if(uuid != "\t"){
+			builder.append(" ").append(uuid);
 		}
 		return builder.toString();
 	}
