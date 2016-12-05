@@ -26,9 +26,13 @@ dependencies {
     })
     testCompile 'junit:junit:4.12'
 
-    compile(name: 'TangoSDK_Zaniah_Java', ext: 'jar')
-    compile(name: 'TangoSupport_Zaniah_Java', ext: 'aar')
-    compile(name: 'TangoUX_Zaniah_Java', ext: 'aar')
+//    compile(name: 'TangoSDK_Zaniah_Java', ext: 'jar')
+//    compile(name: 'TangoSupport_Zaniah_Java', ext: 'aar')
+//    compile(name: 'TangoUX_Zaniah_Java', ext: 'aar')
+
+    compile(name: 'TangoSDK_Argentine_Tango_Java', ext: 'jar')
+    compile(name: 'TangoSupport_Argentine_Tango_Java', ext: 'aar')
+    compile(name: 'TangoUX_Argentine_Tango_Java', ext: 'aar')
 
     compile 'com.android.support:appcompat-v7:25.0.1'
     compile 'com.android.support:design:25.0.1'
