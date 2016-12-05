@@ -2,6 +2,7 @@ package de.inovex.fbuerkle.reliabilityexaminator.Handler;
 
 import android.app.Activity;
 import android.content.Context;
+import android.os.AsyncTask;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.util.Log;
@@ -156,19 +157,24 @@ public class ADFHandler {
 				// name ADF
 				String adfInfo = mTangoHandler.generateADFName();
 				// TODO Access to Metadata causes SIGSEGV
-//				try{
-//					TangoAreaDescriptionMetaData metadata = tango.loadAreaDescriptionMetaData(uuid);
-//					metadata.set(TangoAreaDescriptionMetaData.KEY_NAME, adfInfo.getBytes());
-//					tango.saveAreaDescriptionMetadata(uuid, metadata);
-//				} catch (Throwable t){
-//					t.printStackTrace();
-//				}
-				File metadata = new File("/storage/emulated/legacy/reliabilityexaminator/adfMetadata.csv");
-				FileWriter metaDataWriter = new FileWriter(metadata);
-				if(!metadata.exists() || !metadata.isFile()){
-					metadata.createNewFile();
+				new AsyncTask<Object,Integer,String>(){
+					@Override
+					protected String doInBackground(Object... params) {
+						Tango tango = (Tango)params[0];
+						String adfInfo = (String) params[1];
+						TangoAreaDescriptionMetaData metadata = tango.loadAreaDescriptionMetaData(uuid);
+						metadata.set(TangoAreaDescriptionMetaData.KEY_NAME, adfInfo.getBytes());
+						tango.saveAreaDescriptionMetadata(uuid, metadata);
+						return null;
+					}
+				}.execute(tango,adfInfo);
+
+				File metaFile = new File("/storage/emulated/legacy/reliabilityexaminator/adfMetadata.csv");
+				FileWriter metaDataWriter = new FileWriter(metaFile);
+				if(!metaFile.exists() || !metaFile.isFile()){
+					metaFile.createNewFile();
 				}
-				if(metadata.length() < 1){
+				if(metaFile.length() < 1){
 					metaDataWriter.write("# uuid\ttimestamp\tdistance\textends\n");
 				}
 				metaDataWriter.append(uuid).append("\t").append(adfInfo);
