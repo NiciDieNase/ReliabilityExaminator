@@ -146,11 +146,13 @@ public class ExaminatorActivity
 				return true;
 			case R.id.action_export_adf:
 				mADFaction = ADFaction.export;
-				new SelectADFDialog().setmContext(this).show(getFragmentManager(),"selectADF");
+				new SelectADFDialog().setmContext(this,mTangoHandler.getTango())
+						.show(getFragmentManager(),"selectADF");
 				return true;
 			case R.id.action_load_adf:
 				mADFaction = ADFaction.load;
-				new SelectADFDialog().setmContext(this).show(getFragmentManager(),"selectADF");
+				new SelectADFDialog().setmContext(this,mTangoHandler.getTango())
+						.show(getFragmentManager(),"selectADF");
 				return true;
 			case R.id.action_stop_protocol:
 				mProtocolHandler.stopProtocol();

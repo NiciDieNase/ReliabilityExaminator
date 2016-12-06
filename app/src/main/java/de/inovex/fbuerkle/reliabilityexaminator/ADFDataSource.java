@@ -36,9 +36,9 @@ public class ADFDataSource {
 	private ArrayList<String> mFullUUIDList = null;
 	private Context mContext;
 
-	public ADFDataSource(Context context) {
+	public ADFDataSource(Context context,Tango tango) {
 		mContext = context;
-		mTango = new Tango(context);
+		mTango = tango;
 	}
 
 	public String[] getFullUUIDList() {
@@ -60,12 +60,12 @@ public class ADFDataSource {
 		return mFullUUIDList.toArray(new String[mFullUUIDList.size()]);
 	}
 
-	public String[] getUUIDNames() {
+	public String[] getUUIDNames(String[] list) {
 		if(mFullUUIDList == null){
 			getFullUUIDList();
 		}
 		TangoAreaDescriptionMetaData metadata = new TangoAreaDescriptionMetaData();
-		String[] list = new String[mFullUUIDList.size()];
+//		String[] list = new String[mFullUUIDList.size()];
 		for (int i = 0; i < mFullUUIDList.size(); i++) {
 			try {
 				metadata = mTango.loadAreaDescriptionMetaData(mFullUUIDList.get(i));

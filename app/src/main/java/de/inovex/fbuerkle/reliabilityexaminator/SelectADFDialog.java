@@ -11,6 +11,8 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 
+import com.google.atap.tangoservice.Tango;
+
 /**
  * Created by felix on 04/04/16.
  */
@@ -19,6 +21,7 @@ public class SelectADFDialog extends DialogFragment implements ADFAdapter.ViewHo
 	private static final String TAG = "SelectADFDialog";
 	private ADFSelectListener mListener;
 	private Context mContext;
+	private Tango mTango;
 
 	public interface ADFSelectListener {
 		public void onADFSelected(String uuid);
@@ -40,11 +43,10 @@ public class SelectADFDialog extends DialogFragment implements ADFAdapter.ViewHo
 		LayoutInflater inflater = getActivity().getLayoutInflater();
 		View view = inflater.inflate(R.layout.adf_list,null);
 
-		ADFDataSource source = new ADFDataSource(mContext);
+		ADFDataSource source = new ADFDataSource(mContext,mTango);
 		String[] ids = source.getFullUUIDList();
-		String[] names = source.getUUIDNames();
-//		String[] ids = new String[0];
-//		String[] names = new String[0];
+		String[] names = new String[ids.length];
+		source.getUUIDNames(names);
 		RecyclerView rv = (RecyclerView) view.findViewById(R.id.recyclerView);
 		rv.setHasFixedSize(true);
 		rv.setLayoutManager(new LinearLayoutManager(getActivity()));
@@ -55,8 +57,9 @@ public class SelectADFDialog extends DialogFragment implements ADFAdapter.ViewHo
 		return builder.create();
 	}
 
-	public SelectADFDialog setmContext(Context mContext) {
+	public SelectADFDialog setmContext(Context mContext,Tango tango) {
 		this.mContext = mContext;
+		this.mTango = tango;
 		try {
 			mListener = (ADFSelectListener) mContext;
 		} catch (ClassCastException e){
