@@ -21,6 +21,7 @@ import com.google.atap.tangoservice.TangoPoseData;
 import com.google.atap.tangoservice.TangoXyzIjData;
 
 import java.util.ArrayList;
+import java.util.Locale;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -220,10 +221,20 @@ public class TangoHandler {
 	public String generateADFName(){
 		// Build String
 		StringBuilder builder = new StringBuilder();
+		builder.append(mProtocolHandler.TIMESTAMP).append(" ");
+		builder.append(String.format(Locale.ENGLISH,"%2.f",mProtocolHandler.getDistanceTraveled())) ;
+		if(uuid != ""){
+			builder.append(" extends ").append(uuid);
+		}
+		return builder.toString();
+	}
+	public String generateLogString(){
+		// Build String
+		StringBuilder builder = new StringBuilder();
 		builder.append(mProtocolHandler.TIMESTAMP).append("\t");
 		builder.append(mProtocolHandler.getDistanceTraveled());
-		if(uuid != "\t"){
-			builder.append(" ").append(uuid);
+		if(uuid != ""){
+			builder.append("\t").append(uuid);
 		}
 		return builder.toString();
 	}

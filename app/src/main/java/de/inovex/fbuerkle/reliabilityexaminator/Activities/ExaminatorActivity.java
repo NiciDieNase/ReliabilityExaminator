@@ -210,7 +210,7 @@ public class ExaminatorActivity
         Bundle bundle = new Bundle();
         bundle.putString(TangoAreaDescriptionMetaData.KEY_NAME, "New ADF");
         // UUID is generated after the ADF is saved.
-        bundle.putString(TangoAreaDescriptionMetaData.KEY_UUID, "");
+        bundle.putString(TangoAreaDescriptionMetaData.KEY_UUID, this.uuid);
 
         FragmentManager manager = getFragmentManager();
         SetAdfNameDialog setAdfNameDialog = new SetAdfNameDialog();

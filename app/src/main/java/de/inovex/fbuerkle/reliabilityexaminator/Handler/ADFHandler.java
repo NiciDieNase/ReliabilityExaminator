@@ -152,7 +152,7 @@ public class ADFHandler {
 				Tango tango = mTangoHandler.getTango();
 				newUUID = tango.saveAreaDescription();
 				// name ADF
-				String adfInfo = mTangoHandler.generateADFName() + " " + comment;
+				String adfInfo = mTangoHandler.generateADFName() + "\n" + comment;
 				// TODO Access to Metadata causes SIGSEGV
 				TangoAreaDescriptionMetaData metadata = new TangoAreaDescriptionMetaData();
 				try{
@@ -172,10 +172,11 @@ public class ADFHandler {
 				if(metaFile.length() < 1){
 					metaDataWriter.write("# uuid\ttimestamp\tdistance\textends\n");
 				}
-				metaDataWriter.append(uuid).append("\t").append(adfInfo);
+				String log = mTangoHandler.generateLogString();
+				metaDataWriter.append(uuid).append("\t").append(log);
 				metaDataWriter.flush();
 				metaDataWriter.close();
-				Snackbar.make(rootView,"Saved ADF "+ adfInfo.replace("\t"," ") + " " + newUUID,Snackbar.LENGTH_SHORT).show();
+				Snackbar.make(rootView,"Saved ADF "+ log.replace("\t"," ") + " " + newUUID,Snackbar.LENGTH_SHORT).show();
 			} catch (TangoException e){
 				e.printStackTrace();
 			} catch (IOException e) {
