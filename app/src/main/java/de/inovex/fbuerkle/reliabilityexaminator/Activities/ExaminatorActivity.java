@@ -1,5 +1,6 @@
 package de.inovex.fbuerkle.reliabilityexaminator.Activities;
 
+import android.app.FragmentManager;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
@@ -15,6 +16,7 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.google.atap.tangoservice.Tango;
+import com.google.atap.tangoservice.TangoAreaDescriptionMetaData;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -23,8 +25,12 @@ import de.inovex.fbuerkle.reliabilityexaminator.Handler.SensorHandler;
 import de.inovex.fbuerkle.reliabilityexaminator.Handler.TangoHandler;
 import de.inovex.fbuerkle.reliabilityexaminator.R;
 import de.inovex.fbuerkle.reliabilityexaminator.SelectADFDialog;
+import de.inovex.fbuerkle.reliabilityexaminator.SetAdfNameDialog;
 
-public class ExaminatorActivity extends AppCompatActivity implements SelectADFDialog.ADFSelectListener{
+public class ExaminatorActivity
+		extends AppCompatActivity
+		implements SelectADFDialog.ADFSelectListener,
+			SetAdfNameDialog.CallbackListener{
 
 	private static final String TAG = ExaminatorActivity.class.getSimpleName();
 	public static final String KEY_UUID = "uuid";
@@ -41,6 +47,16 @@ public class ExaminatorActivity extends AppCompatActivity implements SelectADFDi
 	@BindView(R.id.progressBar) ProgressBar progressBar;
 	private String uuid;
 	private boolean arealearning;
+
+	@Override
+	public void onAdfNameOk(String name, String uuid) {
+		mTangoHandler.saveADF(name);
+	}
+
+	@Override
+	public void onAdfNameCancelled() {
+
+	}
 
 	enum ADFaction{undef, export, load;}
 
@@ -62,7 +78,7 @@ public class ExaminatorActivity extends AppCompatActivity implements SelectADFDi
 		fabSave.setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View view) {
-				mTangoHandler.saveADF();
+				showSetAdfNameDialog();
 			}
 		});
 
@@ -185,6 +201,20 @@ public class ExaminatorActivity extends AppCompatActivity implements SelectADFDi
 
 	public void hideLoadingDialog(){
 		progressBar.setVisibility(View.GONE);
-
 	}
+
+	    /**
+     * Shows a dialog for setting the ADF name.
+     */
+    private void showSetAdfNameDialog() {
+        Bundle bundle = new Bundle();
+        bundle.putString(TangoAreaDescriptionMetaData.KEY_NAME, "New ADF");
+        // UUID is generated after the ADF is saved.
+        bundle.putString(TangoAreaDescriptionMetaData.KEY_UUID, "");
+
+        FragmentManager manager = getFragmentManager();
+        SetAdfNameDialog setAdfNameDialog = new SetAdfNameDialog();
+        setAdfNameDialog.setArguments(bundle);
+        setAdfNameDialog.show(manager, "ADFNameDialog");
+    }
 }
