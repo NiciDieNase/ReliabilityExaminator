@@ -219,17 +219,15 @@ public class TangoHandler {
 	}
 
 	public String generateADFName(){
-		// Build String
 		StringBuilder builder = new StringBuilder();
 		builder.append(mProtocolHandler.TIMESTAMP).append(" ");
-		builder.append(String.format(Locale.ENGLISH,"%2.f",mProtocolHandler.getDistanceTraveled())) ;
+		builder.append(String.format(Locale.ENGLISH,"%.2f",mProtocolHandler.getDistanceTraveled())).append("m") ;
 		if(uuid != ""){
 			builder.append(" extends ").append(uuid);
 		}
 		return builder.toString();
 	}
 	public String generateLogString(){
-		// Build String
 		StringBuilder builder = new StringBuilder();
 		builder.append(mProtocolHandler.TIMESTAMP).append("\t");
 		builder.append(mProtocolHandler.getDistanceTraveled());

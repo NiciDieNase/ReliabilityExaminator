@@ -26,7 +26,7 @@
         android:layout_alignParentLeft="true"
         android:layout_alignParentTop="true"
         android:hint="@string/name"
-        android:inputType="textCapWords"
+        android:inputType="textMultiLine"
         android:selectAllOnFocus="true"
         android:maxLines="2"
         android:layout_marginTop="16dp"
