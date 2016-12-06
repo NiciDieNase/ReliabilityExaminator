@@ -228,7 +228,7 @@ public class TangoHandler {
 		return builder.toString();
 	}
 
-	public void saveADF() {
-		mADFHandler.saveADF();
+	public void saveADF(String comment) {
+		mADFHandler.saveADF(comment);
 	}
 }

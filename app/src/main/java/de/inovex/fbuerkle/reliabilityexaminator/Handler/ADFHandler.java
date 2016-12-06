@@ -2,7 +2,6 @@ package de.inovex.fbuerkle.reliabilityexaminator.Handler;
 
 import android.app.Activity;
 import android.content.Context;
-import android.os.AsyncTask;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.util.Log;
@@ -146,29 +145,25 @@ public class ADFHandler {
 	}
 
 
-	public void saveADF() {
+	public void saveADF(String comment) {
 		if(mTangoHandler.isAreaLearning()){
 			String newUUID = "";
 			try{
 				Tango tango = mTangoHandler.getTango();
-				((ExaminatorActivity)mContext).showLoadingDialog();
 				newUUID = tango.saveAreaDescription();
-				((ExaminatorActivity)mContext).hideLoadingDialog();
 				// name ADF
-				String adfInfo = mTangoHandler.generateADFName();
+				String adfInfo = mTangoHandler.generateADFName() + " " + comment;
 				// TODO Access to Metadata causes SIGSEGV
-				new AsyncTask<Object,Integer,String>(){
-					@Override
-					protected String doInBackground(Object... params) {
-						Tango tango = (Tango)params[0];
-						String adfInfo = (String) params[1];
-						TangoAreaDescriptionMetaData metadata = tango.loadAreaDescriptionMetaData(uuid);
-						metadata.set(TangoAreaDescriptionMetaData.KEY_NAME, adfInfo.getBytes());
-						tango.saveAreaDescriptionMetadata(uuid, metadata);
-						return null;
-					}
-				}.execute(tango,adfInfo);
-
+				TangoAreaDescriptionMetaData metadata = new TangoAreaDescriptionMetaData();
+				try{
+					((ExaminatorActivity)mContext).showLoadingDialog();
+					metadata = tango.loadAreaDescriptionMetaData(newUUID);
+					((ExaminatorActivity)mContext).hideLoadingDialog();
+					metadata.set(TangoAreaDescriptionMetaData.KEY_NAME, adfInfo.getBytes());
+					tango.saveAreaDescriptionMetadata(newUUID, metadata);
+				} catch (TangoException e){
+					e.printStackTrace();
+				}
 				File metaFile = new File("/storage/emulated/legacy/reliabilityexaminator/adfMetadata.csv");
 				FileWriter metaDataWriter = new FileWriter(metaFile);
 				if(!metaFile.exists() || !metaFile.isFile()){
