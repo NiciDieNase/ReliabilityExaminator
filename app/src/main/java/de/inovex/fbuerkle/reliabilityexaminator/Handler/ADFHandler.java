@@ -179,9 +179,11 @@ public class ADFHandler {
 						FileWriter metaDataWriter = new FileWriter(metaFile);
 						if(!metaFile.exists() || !metaFile.isFile()){
 							metaFile.createNewFile();
+							Log.d(TAG,"Writing new ADF-Metadatafile");
 						}
 						if(metaFile.length() < 1){
 							metaDataWriter.write("# uuid\ttimestamp\tdistance\textends\n");
+							Log.d(TAG,"Writing ADF-Log Header");
 						}
 						String log = mTangoHandler.generateLogString();
 						metaDataWriter.append(uuid).append("\t").append(log);

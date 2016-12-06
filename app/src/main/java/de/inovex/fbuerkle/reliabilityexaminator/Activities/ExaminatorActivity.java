@@ -160,6 +160,8 @@ public class ExaminatorActivity
 			case R.id.action_start_arealearning:
 				startArealearning();
 				return true;
+			case R.id.action_reset_adf:
+				loadADF(null);
 		}
 		return super.onOptionsItemSelected(item);
 	}
@@ -181,7 +183,9 @@ public class ExaminatorActivity
 
 	public void loadADF(String uuid) {
 		Intent i = new Intent(this, ExaminatorActivity.class);
-		i.putExtra(KEY_UUID,uuid);
+		if(null != uuid){
+			i.putExtra(KEY_UUID,uuid);
+		}
 		startActivity(i);
 		this.finish();
 	}

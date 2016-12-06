@@ -19,4 +19,7 @@
     <item
         android:id="@+id/action_start_arealearning"
         android:title="Start Area Learning"/>
+    <item
+        android:id="@+id/action_reset_adf"
+        android:title="@string/unload_adf"/>
 </menu>
