@@ -153,6 +153,7 @@ public class ADFHandler {
 				protected void onPreExecute() {
 					super.onPreExecute();
 					((ExaminatorActivity)mContext).showLoadingDialog();
+					adfStatus.setText(R.string.adf_status_saving);
 				}
 
 				@Override

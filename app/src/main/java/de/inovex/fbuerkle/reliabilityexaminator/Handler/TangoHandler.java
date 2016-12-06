@@ -223,7 +223,7 @@ public class TangoHandler {
 		builder.append(mProtocolHandler.TIMESTAMP).append(" ");
 		builder.append(String.format(Locale.ENGLISH,"%.2f",mProtocolHandler.getDistanceTraveled())).append("m") ;
 		if(uuid != ""){
-			builder.append(" extends ").append(uuid);
+			builder.append("\nextends ").append(uuid);
 		}
 		return builder.toString();
 	}

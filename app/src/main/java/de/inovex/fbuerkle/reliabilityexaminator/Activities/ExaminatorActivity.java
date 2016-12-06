@@ -202,7 +202,7 @@ public class ExaminatorActivity
 	}
 
 	public void hideLoadingDialog(){
-		progressBar.setVisibility(View.GONE);
+		progressBar.setVisibility(View.INVISIBLE);
 	}
 
 	    /**

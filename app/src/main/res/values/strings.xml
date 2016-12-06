@@ -25,6 +25,7 @@
     <string name="adf_status_located">located with ADF</string>
     <string name="adf_status_notlocated">Not located</string>
     <string name="adf_status_noadf">No ADF Loaded</string>
+    <string name="adf_status_saving">Saving ADF ..</string>
     <string name="name">Name</string>
     <string name="ok">OK</string>
     <string name="cancel">Cancel</string>
