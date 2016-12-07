@@ -233,6 +233,8 @@ public class TangoHandler {
 		builder.append(mProtocolHandler.getDistanceTraveled());
 		if(uuid != ""){
 			builder.append("\t").append(uuid);
+		} else {
+			builder.append("\t0");
 		}
 		return builder.toString();
 	}

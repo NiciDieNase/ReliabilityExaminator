@@ -176,17 +176,17 @@ public class ADFHandler {
 						metadata.set(TangoAreaDescriptionMetaData.KEY_NAME, adfInfo.getBytes());
 						tango.saveAreaDescriptionMetadata(newUUID, metadata);
 						File metaFile = new File("/storage/emulated/legacy/reliabilityexaminator/adfMetadata.csv");
-						FileWriter metaDataWriter = new FileWriter(metaFile);
-						if(!metaFile.exists() || !metaFile.isFile()){
-							metaFile.createNewFile();
-							Log.d(TAG,"Writing new ADF-Metadatafile");
-						}
-						if(metaFile.length() < 1){
-							metaDataWriter.write("# uuid\ttimestamp\tdistance\textends\n");
-							Log.d(TAG,"Writing ADF-Log Header");
-						}
+						FileWriter metaDataWriter = new FileWriter(metaFile,true);
+//						if(!metaFile.exists() || !metaFile.isFile()){
+//							metaFile.createNewFile();
+//							Log.d(TAG,"Writing new ADF-Metadatafile");
+//						}
+//						if(metaFile.length() < 1){
+//							metaDataWriter.write("# uuid\ttimestamp\tdistance\textends\n");
+//							Log.d(TAG,"Writing ADF-Log Header");
+//						}
 						String log = mTangoHandler.generateLogString();
-						metaDataWriter.append(uuid).append("\t").append(log);
+						metaDataWriter.append(newUUID).append("\t").append(log);
 						metaDataWriter.flush();
 						metaDataWriter.close();
 						Snackbar.make(rootView,"Saved ADF "+ log.replace("\t"," ") + " " + newUUID,Snackbar.LENGTH_SHORT).show();
