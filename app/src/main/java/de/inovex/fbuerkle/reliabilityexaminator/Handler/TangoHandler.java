@@ -236,6 +236,7 @@ public class TangoHandler {
 		} else {
 			builder.append("\t0");
 		}
+		builder.append("\n");
 		return builder.toString();
 	}
 

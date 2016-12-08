@@ -142,8 +142,6 @@ public class ExaminatorActivity
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
 		switch (item.getItemId()){
-			case R.id.action_settings:
-				return true;
 			case R.id.action_export_adf:
 				mADFaction = ADFaction.export;
 				new SelectADFDialog().setmContext(this,mTangoHandler.getTango())
@@ -162,6 +160,10 @@ public class ExaminatorActivity
 				return true;
 			case R.id.action_reset_adf:
 				loadADF(null);
+				return true;
+			case R.id.action_restart:
+				loadADF(this.uuid);
+				return true;
 		}
 		return super.onOptionsItemSelected(item);
 	}

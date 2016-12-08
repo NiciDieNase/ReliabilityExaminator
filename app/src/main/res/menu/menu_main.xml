@@ -3,11 +3,6 @@
       xmlns:tools="http://schemas.android.com/tools"
       tools:context="de.inovex.fbuerkle.reliabilityexaminator.Activities.ExaminatorActivity">
     <item
-        android:id="@+id/action_settings"
-        android:orderInCategory="100"
-        android:title="@string/action_settings"
-        app:showAsAction="never"/>
-    <item
         android:id="@+id/action_export_adf"
         android:title="Export ADF"/>
     <item
@@ -22,4 +17,7 @@
     <item
         android:id="@+id/action_reset_adf"
         android:title="@string/unload_adf"/>
+    <item
+        android:id="@+id/action_restart"
+        android:title="@string/restart"/>
 </menu>

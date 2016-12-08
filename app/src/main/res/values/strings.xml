@@ -31,4 +31,5 @@
     <string name="cancel">Cancel</string>
     <string name="set_name_dialog_title">Set the ADF name</string>
     <string name="unload_adf">Unload ADF</string>
+    <string name="restart">Restart</string>
 </resources>
