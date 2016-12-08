@@ -1,9 +1,9 @@
 package de.inovex.fbuerkle.reliabilityexaminator.Handler;
 
 import android.app.Activity;
-import android.app.AlertDialog;
 import android.content.Context;
 import android.opengl.GLSurfaceView;
+import android.support.design.widget.Snackbar;
 import android.util.Log;
 import android.view.ViewGroup;
 import android.widget.TextView;
@@ -199,10 +199,11 @@ public class TangoHandler {
 				((ExaminatorActivity)mContext).runOnUiThread(new Runnable() {
 					@Override
 					public void run() {
-						AlertDialog.Builder builder = new AlertDialog.Builder(((ExaminatorActivity) mContext));
-						builder.setTitle("Tango Failure");
-						builder.setMessage("Failed to connect to Tango: " + e.getMessage());
-						builder.create().show();
+						Snackbar.make(rootView,"Failed to connect to Tango: " + e.getMessage(),Snackbar.LENGTH_INDEFINITE).show();
+//						AlertDialog.Builder builder = new AlertDialog.Builder(((ExaminatorActivity) mContext));
+//						builder.setTitle("Tango Failure");
+//						builder.setMessage("Failed to connect to Tango: " + e.getMessage());
+//						builder.create().show();
 						((ExaminatorActivity)mContext).hideLoadingDialog();
 					}
 				});
