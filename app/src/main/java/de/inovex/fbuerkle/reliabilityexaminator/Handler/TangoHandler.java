@@ -1,6 +1,7 @@
 package de.inovex.fbuerkle.reliabilityexaminator.Handler;
 
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.content.Context;
 import android.opengl.GLSurfaceView;
 import android.util.Log;
@@ -14,6 +15,7 @@ import com.google.atap.tangoservice.TangoConfig;
 import com.google.atap.tangoservice.TangoCoordinateFramePair;
 import com.google.atap.tangoservice.TangoErrorException;
 import com.google.atap.tangoservice.TangoEvent;
+import com.google.atap.tangoservice.TangoException;
 import com.google.atap.tangoservice.TangoInvalidException;
 import com.google.atap.tangoservice.TangoOutOfDateException;
 import com.google.atap.tangoservice.TangoPointCloudData;
@@ -25,6 +27,7 @@ import java.util.Locale;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import de.inovex.fbuerkle.reliabilityexaminator.Activities.ExaminatorActivity;
 import de.inovex.fbuerkle.reliabilityexaminator.R;
 
 /**
@@ -149,6 +152,7 @@ public class TangoHandler {
 
 	public void onResume() {
 		mCameraHandler.onResume();
+		((ExaminatorActivity)mContext).showLoadingDialog();
 
 		Log.d(TAG, "Resuming, starting Tango");
 		final Runnable onTangoReady = new Runnable() {
@@ -162,20 +166,46 @@ public class TangoHandler {
 					mTangoUx.start(params);
 					try {
 						mTango.connect(mConfig);
+						mIsConnected = true;
+						mCameraHandler.connectCamera();
+						mADFHandler = new ADFHandler(mContext,TangoHandler.this,mProtocolHandler,rootView);
+						((ExaminatorActivity)mContext).runOnUiThread(new Runnable() {
+							@Override
+							public void run() {
+								((ExaminatorActivity)mContext).hideLoadingDialog();
+							}
+						});
+						Log.d(TAG, "Resumed, Tango started");
 					} catch (TangoOutOfDateException e){
 						if(null != mTangoUx){
 							mTangoUx.showTangoOutOfDate();
 						}
-					} catch (TangoInvalidException e){
-						Log.d(TAG, "TangoInvalidException" + e.getMessage());
-					} catch (TangoErrorException e){
-						e.printStackTrace();
+					} catch (final TangoInvalidException e){
+						handleException(e);
+					} catch (final TangoErrorException e){
+						handleException(e);
 					}
-					mIsConnected = true;
-					mCameraHandler.connectCamera();
-					mADFHandler = new ADFHandler(mContext,TangoHandler.this,mProtocolHandler,rootView);
-					Log.d(TAG, "Resumed, Tango started");
 				}
+			}
+
+			private void handleException(final TangoException e) {
+				e.printStackTrace();
+				if(e.getCause() != null){
+					e.getCause().printStackTrace();
+					Log.d(TAG,"TangoError: " + e.getMessage() + "\n"+ e.getCause().getMessage());
+				} else {
+					Log.d(TAG,"TangoError: " + e.getMessage());
+				}
+				((ExaminatorActivity)mContext).runOnUiThread(new Runnable() {
+					@Override
+					public void run() {
+						AlertDialog.Builder builder = new AlertDialog.Builder(((ExaminatorActivity) mContext));
+						builder.setTitle("Tango Failure");
+						builder.setMessage("Failed to connect to Tango: " + e.getMessage());
+						builder.create().show();
+						((ExaminatorActivity)mContext).hideLoadingDialog();
+					}
+				});
 			}
 		};
 		mTango =  new Tango(mContext,onTangoReady);
