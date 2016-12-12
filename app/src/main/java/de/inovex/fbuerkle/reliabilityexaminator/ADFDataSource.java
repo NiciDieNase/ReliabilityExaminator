@@ -83,7 +83,7 @@ public class ADFDataSource {
 			} else {
 				list[i] = "<" + mFullUUIDList.get(i) + ">";
 			}
-			Log.d(TAG,list[i]);
+//			Log.d(TAG,list[i]);
 		}
 		return list;
 	}
