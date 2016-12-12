@@ -2,6 +2,7 @@ package de.inovex.fbuerkle.reliabilityexaminator.Handler;
 
 import android.app.Activity;
 import android.content.Context;
+import android.media.MediaScannerConnection;
 import android.opengl.GLSurfaceView;
 import android.support.design.widget.Snackbar;
 import android.util.Log;
@@ -243,6 +244,8 @@ public class TangoHandler {
 		Log.d(TAG,"Exporting ADF " + uuid);
 		String exportDir = "/storage/emulated/legacy/TangoADFs/";
 		mTango.exportAreaDescriptionFile(uuid,exportDir);
+		MediaScannerConnection.scanFile(mContext, new String[] { exportDir }, null, null);
+
 	}
 
 	public void takeScreenshot(){

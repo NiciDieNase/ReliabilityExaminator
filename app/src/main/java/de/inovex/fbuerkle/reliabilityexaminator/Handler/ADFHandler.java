@@ -2,6 +2,7 @@ package de.inovex.fbuerkle.reliabilityexaminator.Handler;
 
 import android.app.Activity;
 import android.content.Context;
+import android.media.MediaScannerConnection;
 import android.os.AsyncTask;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
@@ -167,6 +168,7 @@ public class ADFHandler {
 					}
 					writer.flush();
 					writer.close();
+					MediaScannerConnection.scanFile(mContext, new String[] { adfList.getAbsolutePath() }, null, null);
 				} catch (IOException e) {
 					e.printStackTrace();
 				}
