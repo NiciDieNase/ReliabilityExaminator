@@ -107,10 +107,12 @@ public class ADFHandler {
 							located.setText(R.string.yes);
 							long time = timestamp - mStartTime;
 							adfTime.setText(Long.toString(time) + " ms");
-							mProtocolHandler.logInitialLocalization(time,timestamp);
 							mADFLocated = true;
 							if(mTangoHandler.isAreaLearning()){
 								fabSave.show();
+							} else {
+								mProtocolHandler.logInitialLocalization(time,timestamp);
+
 							}
 						}
 						double[] position = pose.translation;
