@@ -164,6 +164,9 @@ public class ExaminatorActivity
 			case R.id.action_restart:
 				loadADF(this.uuid);
 				return true;
+			case R.id.action_export_adf_list:
+				mTangoHandler.exportADFList();
+				return true;
 		}
 		return super.onOptionsItemSelected(item);
 	}

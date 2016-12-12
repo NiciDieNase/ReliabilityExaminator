@@ -18,9 +18,11 @@ import com.google.atap.tangoservice.TangoPoseData;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.util.Map;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import de.inovex.fbuerkle.reliabilityexaminator.ADFDataSource;
 import de.inovex.fbuerkle.reliabilityexaminator.Activities.ExaminatorActivity;
 import de.inovex.fbuerkle.reliabilityexaminator.R;
 
@@ -145,6 +147,33 @@ public class ADFHandler {
 		}
 	}
 
+	public void saveAllAdfNames(){
+		new AsyncTask<Void, Long, Void>() {
+			@Override
+			protected Void doInBackground(Void... voids) {
+				ADFDataSource adfDataSource = new ADFDataSource(mContext, mTangoHandler.getTango());
+				Map<String, String> adfMap = adfDataSource.getUUIDMap();
+				File adfList = new File("/storage/emulated/legacy/reliabilityexaminator/adfList.csv");
+				try {
+					if(!adfList.exists() || !adfList.isFile()){
+						adfList.createNewFile();
+					}
+					FileWriter writer = new FileWriter(adfList);
+					writer.append("uuid\tADF-Name\n");
+					for(Map.Entry<String,String> e : adfMap.entrySet()){
+						String string = String.format("%s\t%s\n", e.getKey(), e.getValue());
+						Log.d(TAG,string);
+						writer.append(string);
+					}
+					writer.flush();
+					writer.close();
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+				return null;
+			}
+		}.execute();
+	}
 
 	public void saveADF(String comment) {
 		if(mTangoHandler.isAreaLearning()){

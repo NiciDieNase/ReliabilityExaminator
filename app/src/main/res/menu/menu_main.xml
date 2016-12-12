@@ -20,4 +20,7 @@
     <item
         android:id="@+id/action_restart"
         android:title="@string/restart"/>
+    <item
+        android:id="@+id/action_export_adf_list"
+        android:title="@string/export_adf_list"/>
 </menu>

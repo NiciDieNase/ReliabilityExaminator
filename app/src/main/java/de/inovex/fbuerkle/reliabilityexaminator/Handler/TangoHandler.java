@@ -271,6 +271,9 @@ public class TangoHandler {
 		return builder.toString();
 	}
 
+	public void exportADFList(){
+		mADFHandler.saveAllAdfNames();
+	}
 	public void saveADF(String comment) {
 		mADFHandler.saveADF(comment);
 	}

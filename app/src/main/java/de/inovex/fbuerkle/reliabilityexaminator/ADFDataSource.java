@@ -25,6 +25,8 @@ import com.google.atap.tangoservice.TangoAreaDescriptionMetaData;
 import com.google.atap.tangoservice.TangoErrorException;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * This class interfaces a Tango Object and maintains a full list of ADF UUIds. Whenever an adf is
@@ -84,5 +86,15 @@ public class ADFDataSource {
 			Log.d(TAG,list[i]);
 		}
 		return list;
+	}
+
+	public Map<String,String> getUUIDMap(){
+		String[] fullUUIDList = getFullUUIDList();
+		String[] names = getUUIDNames(new String[fullUUIDList.length]);
+		HashMap<String, String> map = new HashMap<>();
+		for(int i = 0; i < fullUUIDList.length; i++){
+			map.put(fullUUIDList[i],names[i]);
+		}
+		return map;
 	}
 }
