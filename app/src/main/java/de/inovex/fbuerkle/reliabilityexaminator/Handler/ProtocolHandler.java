@@ -185,7 +185,9 @@ public class ProtocolHandler {
 			if(!file.exists()){
 				writer.append("# date\tsystem-timestamp\tadf-uuid\ttimeToFailure\n");
 			}
-			writer.append(String.format("%s\t%s\t%d\t%s\n",TIMESTAMP,uuid,timeToFailure,distanceTraveled));
+			if(distanceTraveled != 0.0){ // if distanceTraveld == 0.0 Tango service has failed/is not started
+				writer.append(String.format("%s\t%s\t%d\t%s\n",TIMESTAMP,uuid,timeToFailure,distanceTraveled));
+			}
 			writer.flush();
 			writer.close();
 		} catch (IOException e) {
