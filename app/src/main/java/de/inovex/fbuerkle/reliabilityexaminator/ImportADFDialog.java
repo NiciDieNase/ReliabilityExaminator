@@ -50,5 +50,6 @@ public class ImportADFDialog extends DialogFragment implements ImportAdapter.Vie
 	@Override
 	public void onFileSelect(String path) {
 		mTango.importAreaDescriptionFile(path);
+		this.dismiss();
 	}
 }

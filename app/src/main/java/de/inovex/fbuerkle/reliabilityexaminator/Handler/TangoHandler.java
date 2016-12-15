@@ -242,7 +242,7 @@ public class TangoHandler {
 
 	public void exportADF(String uuid) {
 		Log.d(TAG,"Exporting ADF " + uuid);
-		String exportDir = "/storage/emulated/legacy/TangoADFs/";
+		String exportDir = "/storage/emulated/0/TangoADFs/";
 		mTango.exportAreaDescriptionFile(uuid,exportDir);
 		MediaScannerConnection.scanFile(mContext, new String[] { exportDir }, null, null);
 

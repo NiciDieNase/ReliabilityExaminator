@@ -1,5 +1,6 @@
 package de.inovex.fbuerkle.reliabilityexaminator.Handler;
 
+import android.support.design.widget.Snackbar;
 import android.util.Log;
 
 import com.google.atap.tangoservice.TangoPoseData;
@@ -18,6 +19,7 @@ public class ProtocolHandler {
 
 	private static final String TAG = ProtocolHandler.class.getSimpleName();
 	public static final String TIMESTAMP = new DateTime().toString("yyyyMMdd-HH:mm:ss");
+	public static final String STORAGE_PATH = "/storage/emulated/0/reliabilityexaminator/";
 	private FileWriter angleFW;
 	private FileWriter eventFW;
 	private FileWriter positionFW;
@@ -39,7 +41,7 @@ public class ProtocolHandler {
 	public void startProtocol(String uuid){
 		this.uuid = uuid;
 		Log.d(TAG, "Start writing data-protocol");
-		path = "/storage/emulated/legacy/reliabilityexaminator/"
+		path = STORAGE_PATH
 				+ TIMESTAMP + "/";
 		new File(path).mkdirs();
 		File angleLogfile = new File(path + "angles.csv");
@@ -74,7 +76,7 @@ public class ProtocolHandler {
 			positionSoSFW.append("#system-timestamp\tx\ty\tz\n");
 			active = true;
 		} catch (IOException e) {
-			e.printStackTrace();
+			Snackbar.make(null,e.getMessage(),Snackbar.LENGTH_LONG).show();
 		}
 		logStart = System.currentTimeMillis();
 	}
@@ -150,7 +152,7 @@ public class ProtocolHandler {
 
 	public void logInitialLocalization(long timeToLocalization, long timestamp){
 		try {
-			File file = new File("/storage/emulated/legacy/reliabilityexaminator/initialLocalization.csv");
+			File file = new File(STORAGE_PATH + "initialLocalization.csv");
 			FileWriter writer = new FileWriter(file,true);
 			if(!file.exists()){
 				writer.append("# date\tsystem-timestamp\tadf-uuid\ttime-to-localization\n");
@@ -180,7 +182,7 @@ public class ProtocolHandler {
 
 	private void logLocalizationFailure(long timeToFailure) {
 		try {
-			File file = new File("/storage/emulated/legacy/reliabilityexaminator/localizationError.csv");
+			File file = new File(STORAGE_PATH + "localizationError.csv");
 			FileWriter writer = new FileWriter(file, true);
 			if(!file.exists()){
 				writer.append("# date\tsystem-timestamp\tadf-uuid\ttimeToFailure\n");
