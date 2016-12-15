@@ -23,4 +23,7 @@
     <item
         android:id="@+id/action_export_adf_list"
         android:title="@string/export_adf_list"/>
+    <item
+        android:id="@+id/action_import_adf"
+        android:title="@string/import_adf"/>
 </menu>

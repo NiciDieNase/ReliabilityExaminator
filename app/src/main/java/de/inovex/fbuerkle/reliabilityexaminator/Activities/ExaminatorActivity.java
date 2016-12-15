@@ -23,6 +23,7 @@ import butterknife.ButterKnife;
 import de.inovex.fbuerkle.reliabilityexaminator.Handler.ProtocolHandler;
 import de.inovex.fbuerkle.reliabilityexaminator.Handler.SensorHandler;
 import de.inovex.fbuerkle.reliabilityexaminator.Handler.TangoHandler;
+import de.inovex.fbuerkle.reliabilityexaminator.ImportADFDialog;
 import de.inovex.fbuerkle.reliabilityexaminator.R;
 import de.inovex.fbuerkle.reliabilityexaminator.SelectADFDialog;
 import de.inovex.fbuerkle.reliabilityexaminator.SetAdfNameDialog;
@@ -167,6 +168,9 @@ public class ExaminatorActivity
 			case R.id.action_export_adf_list:
 				mTangoHandler.exportADFList();
 				return true;
+			case R.id.action_import_adf:
+				new ImportADFDialog().setTango(mTangoHandler.getTango())
+						.show(getFragmentManager(),"importADF");
 		}
 		return super.onOptionsItemSelected(item);
 	}
