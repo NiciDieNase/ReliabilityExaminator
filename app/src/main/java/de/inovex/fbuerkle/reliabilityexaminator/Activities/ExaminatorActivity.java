@@ -110,7 +110,7 @@ public class ExaminatorActivity
 			mProtocolHandler.startProtocol("learning");
 		}
 		fabSave.hide();
-		if(uuid != ""){
+		if(!uuid.isEmpty()){
 			Snackbar.make(rootView, "Started with ADF: "+uuid,Snackbar.LENGTH_SHORT).show();
 			mProtocolHandler.startProtocol(uuid);
 //			mTangoHandler.takeScreenshot();
@@ -202,7 +202,7 @@ public class ExaminatorActivity
 
 	public void loadADF(String uuid) {
 		Intent i = new Intent(this, ExaminatorActivity.class);
-		if(null != uuid){
+		if(null != uuid && !uuid.isEmpty()){
 			i.putExtra(KEY_UUID,uuid);
 		}
 		startActivity(i);
