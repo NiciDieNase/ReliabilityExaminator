@@ -61,7 +61,7 @@
             app:layout_anchor="@+id/include"
             app:layout_anchorGravity="bottom|right"
             android:layout_gravity="bottom|right"
-            app:backgroundTint="?android:attr/colorPrimary"/>
+            app:backgroundTint="?attr/colorPrimary"/>
         <!--app:layout_anchor="@+id/include"-->
 
     </android.support.design.widget.CoordinatorLayout>

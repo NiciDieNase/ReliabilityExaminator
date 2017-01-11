@@ -1,6 +1,7 @@
 package de.inovex.fbuerkle.reliabilityexaminator.Handler;
 
 import android.content.Context;
+import android.hardware.Camera;
 import android.opengl.GLSurfaceView;
 import android.util.Log;
 
@@ -19,6 +20,7 @@ import de.inovex.fbuerkle.reliabilityexaminator.HelloVideoRenderer;
 public class CameraHandler {
 	private static final String TAG = CameraHandler.class.getSimpleName();
 	private final Context mContext;
+	private final boolean enableFisheye;
 	private TangoHandler mTangoHandler;
 	private final GLSurfaceView mRgbView;
 	private final GLSurfaceView mFisheyeView;
@@ -37,6 +39,9 @@ public class CameraHandler {
 		this.mTangoHandler = mTangoHandler;
 		this.mRgbView = mRgbView;
 		this.mFisheyeView = mFisheyeView;
+
+		//
+		enableFisheye = Camera.getNumberOfCameras() > 2;
 
 		setupRenderer();
 	}
@@ -89,36 +94,38 @@ public class CameraHandler {
 		});
 		mRgbView.setRenderer(mRgbRenderer);
 
-		mFisheyeView.setEGLContextClientVersion(2);
-		mFisheyeRenderer = new HelloVideoRenderer(new HelloVideoRenderer.RenderCallback() {
+//		if(enableFisheye) {
+			mFisheyeView.setEGLContextClientVersion(2);
+			mFisheyeRenderer = new HelloVideoRenderer(new HelloVideoRenderer.RenderCallback() {
 
-			@Override
-			public void preRender() {
-				if(!mTangoHandler.isConnected()){
+				@Override
+				public void preRender() {
+					if (!mTangoHandler.isConnected()) {
 //					Log.d(TAG,"Tango not connected, won't setup Fisheye Renderer");
-					return;
-				}
-				try{
-//					Log.d(TAG,"Tango connected, setting up Fisheye-Renderer");
-					synchronized (mContext){
-						if(mBottomConnectedTextureIDGlThread == INVALID_TEXTURE_ID){
-							mBottomConnectedTextureIDGlThread = mRgbRenderer.getTextureId();
-							mTangoHandler.getTango().connectTextureId(TangoCameraIntrinsics.TANGO_CAMERA_FISHEYE,
-									mRgbRenderer.getTextureId());
-						}
-						if(mIsFisheyeFrameAvailable.compareAndSet(true,false)){
-							double rgbTimestamp =
-									mTangoHandler.getTango().updateTexture(TangoCameraIntrinsics.TANGO_CAMERA_FISHEYE);
-						}
+						return;
 					}
-				} catch (TangoErrorException e) {
-					Log.e(TAG, "Tango API call error within the OpenGL thread", e);
-				} catch (TangoInvalidException e){
-					Log.e(TAG, "Tango Invalid " + e.getMessage());
+					try {
+//					Log.d(TAG,"Tango connected, setting up Fisheye-Renderer");
+						synchronized (mContext) {
+							if (mBottomConnectedTextureIDGlThread == INVALID_TEXTURE_ID) {
+								mBottomConnectedTextureIDGlThread = mRgbRenderer.getTextureId();
+								mTangoHandler.getTango().connectTextureId(TangoCameraIntrinsics.TANGO_CAMERA_FISHEYE,
+										mRgbRenderer.getTextureId());
+							}
+							if (mIsFisheyeFrameAvailable.compareAndSet(true, false)) {
+								double rgbTimestamp =
+										mTangoHandler.getTango().updateTexture(TangoCameraIntrinsics.TANGO_CAMERA_FISHEYE);
+							}
+						}
+					} catch (TangoErrorException e) {
+						Log.e(TAG, "Tango API call error within the OpenGL thread", e);
+					} catch (TangoInvalidException e) {
+						Log.e(TAG, "Tango Invalid " + e.getMessage());
+					}
 				}
-			}
-		});
-		mFisheyeView.setRenderer(mFisheyeRenderer);
+			});
+			mFisheyeView.setRenderer(mFisheyeRenderer);
+//		}
 	}
 
 	public void connectCamera() {
@@ -143,7 +150,7 @@ public class CameraHandler {
 				mIsRGBFrameAvailable.set(true);
 				mRgbView.requestRender();
 			}
-			if(cameraID == TangoCameraIntrinsics.TANGO_CAMERA_FISHEYE){
+			if(enableFisheye && cameraID == TangoCameraIntrinsics.TANGO_CAMERA_FISHEYE){
 //					Log.d(TAG, "New Fisheye-Frame");
 				if(mFisheyeView.getRenderMode() != GLSurfaceView.RENDERMODE_WHEN_DIRTY){
 					mFisheyeView.setRenderMode(GLSurfaceView.RENDERMODE_WHEN_DIRTY);
