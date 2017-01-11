@@ -44,6 +44,7 @@ public class ExaminatorActivity
 	@BindView(R.id.toolbar) Toolbar toolbar;
 	@BindView(R.id.fab_log) FloatingActionButton fabLog;
 	@BindView(R.id.fab_save) FloatingActionButton fabSave;
+	@BindView(R.id.fab_restart) FloatingActionButton fabRestart;
 	@BindView(R.id.tv_adf_status_value) TextView adfStatus;
 	@BindView(R.id.progressBar) ProgressBar progressBar;
 	private String uuid;
@@ -68,6 +69,9 @@ public class ExaminatorActivity
 		setContentView(R.layout.activity_main);
 		ButterKnife.bind(this);
 		setSupportActionBar(toolbar);
+
+		this.uuid = "";
+
 		fabLog.setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View view) {
@@ -80,6 +84,12 @@ public class ExaminatorActivity
 			@Override
 			public void onClick(View view) {
 				showSetAdfNameDialog();
+			}
+		});
+		fabRestart.setOnClickListener(new View.OnClickListener() {
+			@Override
+			public void onClick(View view) {
+				loadADF(uuid);
 			}
 		});
 
