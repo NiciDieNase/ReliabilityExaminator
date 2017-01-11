@@ -150,14 +150,16 @@ public class ProtocolHandler {
 		}
 	}
 
-	public void logInitialLocalization(long timeToLocalization, long timestamp){
+	public void logInitialLocalization(long timeToLocalization, long timestamp, double[] translation){
 		try {
 			File file = new File(STORAGE_PATH + "initialLocalization.csv");
 			FileWriter writer = new FileWriter(file,true);
 			if(!file.exists()){
 				writer.append("# date\tsystem-timestamp\tadf-uuid\ttime-to-localization\n");
 			}
-			writer.append(String.format("%s\t%d\t%s\t%d\t%s\n",TIMESTAMP,timestamp,uuid,timeToLocalization,distanceTraveled));
+			writer.append(String.format("%s\t%d\t%s\t%d\t%s\t%s\t%s\t%s\n",
+					TIMESTAMP,timestamp,uuid,timeToLocalization,distanceTraveled,
+					translation[0], translation[1], translation[2]));
 			writer.flush();
 			writer.close();
 		} catch (IOException e) {

@@ -111,7 +111,7 @@ public class ADFHandler {
 							if(mTangoHandler.isAreaLearning()){
 								fabSave.show();
 							} else {
-								mProtocolHandler.logInitialLocalization(time,timestamp);
+								mProtocolHandler.logInitialLocalization(time,timestamp,pose.translation);
 
 							}
 						}
