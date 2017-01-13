@@ -155,7 +155,7 @@ public class ProtocolHandler {
 			File file = new File(STORAGE_PATH + "initialLocalization.csv");
 			FileWriter writer = new FileWriter(file,true);
 			if(!file.exists()){
-				writer.append("# date\tsystem-timestamp\tadf-uuid\ttime-to-localization\n");
+				writer.append("# date\tsystem-timestamp\tadf-uuid\ttime-to-localization\tdistance-traveled\tx\ty\tz\n");
 			}
 			writer.append(String.format("%s\t%d\t%s\t%d\t%s\t%s\t%s\t%s\n",
 					TIMESTAMP,timestamp,uuid,timeToLocalization,distanceTraveled,
