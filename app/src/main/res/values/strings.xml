@@ -34,4 +34,5 @@
     <string name="restart">Restart</string>
     <string name="export_adf_list">Export ADF-List</string>
     <string name="import_adf">Import ADF</string>
+    <string name="start_data_gathering">Start Data Gathering</string>
 </resources>

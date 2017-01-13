@@ -10,6 +10,8 @@ import org.joda.time.DateTime;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by felix on 24/11/16.
@@ -31,6 +33,15 @@ public class ProtocolHandler {
 	private boolean isInitialLocation = true;
 	private long logStart;
 	private TangoPoseData lastPose;
+	private List<OnLocalizationEventListener> listeners = new ArrayList<OnLocalizationEventListener>();
+
+	public interface OnLocalizationEventListener {
+		public void onLocalizationEvent(boolean isInitialLocalization);
+	}
+
+	public void registerLocalizationEventListener(OnLocalizationEventListener listener){
+		this.listeners.add(listener);
+	}
 
 	public double getDistanceTraveled() {
 		return distanceTraveled;
@@ -164,6 +175,9 @@ public class ProtocolHandler {
 			writer.close();
 		} catch (IOException e) {
 			e.printStackTrace();
+		}
+		for(OnLocalizationEventListener listener:listeners){
+			listener.onLocalizationEvent(this.isInitialLocation);
 		}
 		this.isInitialLocation = false;
 	}

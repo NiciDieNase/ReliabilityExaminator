@@ -26,4 +26,7 @@
     <item
         android:id="@+id/action_import_adf"
         android:title="@string/import_adf"/>
+    <item
+        android:id="@+id/action_datagathering_mode"
+        android:title="@string/start_data_gathering"/>
 </menu>

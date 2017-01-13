@@ -112,7 +112,6 @@ public class ADFHandler {
 								fabSave.show();
 							} else {
 								mProtocolHandler.logInitialLocalization(time,timestamp,pose.translation);
-
 							}
 						}
 						double[] position = pose.translation;

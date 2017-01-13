@@ -2,6 +2,7 @@ package de.inovex.fbuerkle.reliabilityexaminator.Activities;
 
 import android.app.FragmentManager;
 import android.content.Intent;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
@@ -31,11 +32,12 @@ import de.inovex.fbuerkle.reliabilityexaminator.SetAdfNameDialog;
 public class ExaminatorActivity
 		extends AppCompatActivity
 		implements SelectADFDialog.ADFSelectListener,
-			SetAdfNameDialog.CallbackListener{
+			SetAdfNameDialog.CallbackListener, ProtocolHandler.OnLocalizationEventListener {
 
 	private static final String TAG = ExaminatorActivity.class.getSimpleName();
 	public static final String KEY_UUID = "uuid";
 	public static final String KEY_AREALEARNING = "arealearning";
+	private static final String KEY_DATAGATHERING = "datagathering";
 
 	private SensorHandler mSensorHandler;
 	private TangoHandler mTangoHandler;
@@ -49,6 +51,7 @@ public class ExaminatorActivity
 	@BindView(R.id.progressBar) ProgressBar progressBar;
 	private String uuid;
 	private boolean arealearning;
+	private boolean dataGatheringMode = false;
 
 	@Override
 	public void onAdfNameOk(String name, String uuid) {
@@ -59,6 +62,29 @@ public class ExaminatorActivity
 	public void onAdfNameCancelled() {
 
 	}
+
+	@Override
+	public void onLocalizationEvent(boolean isInitialLocalization) {
+		if(isInitialLocalization){
+			new AsyncTask<Object,Object,Object>() {
+				@Override
+				protected Object doInBackground(Object[] objects) {
+					try {
+						Thread.sleep(1500);
+					} catch (InterruptedException e) {
+						e.printStackTrace();
+					}
+					return null;
+				}
+				@Override
+				protected void onPostExecute(Object o) {
+					super.onPostExecute(o);
+					loadADF(uuid);
+				}
+			}.execute();
+		}
+	}
+
 
 	enum ADFaction{undef, export, load;}
 
@@ -102,9 +128,13 @@ public class ExaminatorActivity
 		if(extras != null){
 			this.uuid = extras.getString(KEY_UUID,"");
 			this.arealearning = extras.getBoolean(KEY_AREALEARNING,false);
+			this.dataGatheringMode = extras.getBoolean(KEY_DATAGATHERING,false);
 		}
 
 		mProtocolHandler = new ProtocolHandler();
+		if(dataGatheringMode){
+			mProtocolHandler.registerLocalizationEventListener(this);
+		}
 		if(this.arealearning){
 			Snackbar.make(rootView, "Starting Area Learning",Snackbar.LENGTH_SHORT).show();
 			mProtocolHandler.startProtocol("learning");
@@ -181,6 +211,12 @@ public class ExaminatorActivity
 			case R.id.action_import_adf:
 				new ImportADFDialog().setTango(mTangoHandler.getTango())
 						.show(getFragmentManager(),"importADF");
+				return true;
+			case R.id.action_datagathering_mode:
+				this.dataGatheringMode = !this.dataGatheringMode;
+				if(this.dataGatheringMode){
+					this.loadADF(this.uuid);
+				}
 		}
 		return super.onOptionsItemSelected(item);
 	}
@@ -201,22 +237,22 @@ public class ExaminatorActivity
 	}
 
 	public void loadADF(String uuid) {
-		Intent i = new Intent(this, ExaminatorActivity.class);
-		if(null != uuid && !uuid.isEmpty()){
-			i.putExtra(KEY_UUID,uuid);
-		}
-		startActivity(i);
-		this.finish();
+		restart(uuid,this.arealearning);
 	}
 
 	private void startArealearning(){
+		restart(this.uuid,true);
+	}
+
+	private void restart(String uuid, boolean arealearning){
 		Intent i = new Intent(this, ExaminatorActivity.class);
-		if(this.uuid != ""){
+		if(!uuid.isEmpty()){
 			i.putExtra(KEY_UUID,uuid);
 		}
-		i.putExtra(KEY_AREALEARNING,true);
+		i.putExtra(KEY_AREALEARNING,arealearning);
+		i.putExtra(KEY_DATAGATHERING,this.dataGatheringMode);
 		startActivity(i);
-		finish();
+		this.finish();
 	}
 
 	public void showLoadingDialog(){
