@@ -1,12 +1,15 @@
 package de.inovex.fbuerkle.reliabilityexaminator.Handler;
 
 import android.content.Context;
+import android.content.res.Configuration;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
 import android.util.Log;
+import android.view.Surface;
 import android.view.ViewGroup;
+import android.view.WindowManager;
 import android.widget.TextView;
 
 import butterknife.BindView;
@@ -59,7 +62,13 @@ public class SensorHandler implements SensorEventListener{
 		// TODO handle Phab 2 Pro (Axes are different)
 		mSensorManager.getRotationMatrix(mRotationMatrix,null,mAccelerometerReading,mMagnetometerReading);
 		mSensorManager.getOrientation(mRotationMatrix,mOrientationAngles);
-		double angle = mOrientationAngles[1] * -180 / Math.PI;
+		double angle = -1.0;
+		// Jellowstone has API-Version 19, Phab has 23
+		if(getDeviceDefaultOrientation() == Configuration.ORIENTATION_LANDSCAPE){
+			angle = mOrientationAngles[1] * -180 / Math.PI;
+		} else {
+			angle = mOrientationAngles[2] * -180 / Math.PI;
+		}
 
 		double avg = mProtocolHandler.logDeviceAngle(System.currentTimeMillis(),angle);
 		tvPitchValue.setText(String.format("%.1f°", avg));
@@ -74,4 +83,21 @@ public class SensorHandler implements SensorEventListener{
 	public void onPause(){
 		mSensorManager.unregisterListener(this);
 	}
+
+	private int getDeviceDefaultOrientation() {
+		WindowManager windowManager =  (WindowManager) mContext.getSystemService(Context.WINDOW_SERVICE);
+
+		Configuration config = mContext.getResources().getConfiguration();
+
+		int rotation = windowManager.getDefaultDisplay().getRotation();
+
+		if ( ((rotation == Surface.ROTATION_0 || rotation == Surface.ROTATION_180) &&
+				config.orientation == Configuration.ORIENTATION_LANDSCAPE)
+			|| ((rotation == Surface.ROTATION_90 || rotation == Surface.ROTATION_270) &&
+				config.orientation == Configuration.ORIENTATION_PORTRAIT)) {
+		  return Configuration.ORIENTATION_LANDSCAPE;
+		} else {
+		  return Configuration.ORIENTATION_PORTRAIT;
+		}
+}
 }
