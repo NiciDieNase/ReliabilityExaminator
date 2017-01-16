@@ -9,10 +9,6 @@ import android.util.Log;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
-import org.apache.commons.math3.stat.descriptive.DescriptiveStatistics;
-
-import java.text.DecimalFormat;
-
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import de.inovex.fbuerkle.reliabilityexaminator.R;
@@ -32,8 +28,6 @@ public class SensorHandler implements SensorEventListener{
 	private final float[] mMagnetometerReading = new float[3];
 	private final float[] mRotationMatrix = new float[9];
 	private final float[] mOrientationAngles = new float[3];
-//	private List<Double> angleBuffer = new LinkedList<>();
-	DescriptiveStatistics angles = new DescriptiveStatistics();
 	@BindView(R.id.tv_pitch_value) protected TextView tvPitchValue;
 	private ProtocolHandler mProtocolHandler;
 
@@ -44,7 +38,6 @@ public class SensorHandler implements SensorEventListener{
 		mSensorManager = (SensorManager) mContext.getSystemService(Context.SENSOR_SERVICE);
 		mAccelerationSensor = mSensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
 		mMagnetometer = mSensorManager.getDefaultSensor(Sensor.TYPE_MAGNETIC_FIELD);
-		angles.setWindowSize(50);
 	}
 
 	@Override
@@ -63,16 +56,14 @@ public class SensorHandler implements SensorEventListener{
 	}
 
 	public void updateOrientationAngles(){
+		// TODO handle Phab 2 Pro (Axes are different)
 		mSensorManager.getRotationMatrix(mRotationMatrix,null,mAccelerometerReading,mMagnetometerReading);
 		mSensorManager.getOrientation(mRotationMatrix,mOrientationAngles);
 		double angle = mOrientationAngles[1] * -180 / Math.PI;
-		angles.addValue(angle);
 
-		DecimalFormat format = new DecimalFormat("0.0");
-		double avg = angles.getMean();
+		double avg = mProtocolHandler.logDeviceAngle(System.currentTimeMillis(),angle);
 		tvPitchValue.setText(String.format("%.1f°", avg));
 
-		mProtocolHandler.logDeviceAngle(System.currentTimeMillis(),avg);
 	}
 
 	public void onResume(){

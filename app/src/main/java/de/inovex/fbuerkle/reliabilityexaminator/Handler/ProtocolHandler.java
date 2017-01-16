@@ -5,6 +5,7 @@ import android.util.Log;
 
 import com.google.atap.tangoservice.TangoPoseData;
 
+import org.apache.commons.math3.stat.descriptive.DescriptiveStatistics;
 import org.joda.time.DateTime;
 
 import java.io.File;
@@ -34,6 +35,11 @@ public class ProtocolHandler {
 	private long logStart;
 	private TangoPoseData lastPose;
 	private List<OnLocalizationEventListener> listeners = new ArrayList<OnLocalizationEventListener>();
+	DescriptiveStatistics angles = new DescriptiveStatistics();
+
+	public ProtocolHandler(){
+		angles.setWindowSize(100);
+	}
 
 	public interface OnLocalizationEventListener {
 		public void onLocalizationEvent(boolean isInitialLocalization);
@@ -116,14 +122,17 @@ public class ProtocolHandler {
 		}
 	}
 
-	public void logDeviceAngle(long systemTimestamp, double angle){
+	public double logDeviceAngle(long systemTimestamp, double angle){
+		angles.addValue(angle);
+		double avg = angles.getMean();
 		if(active){
 			try {
-				angleFW.append(String.format("%d\t%s\n", systemTimestamp, angle));
+				angleFW.append(String.format("%d\t%s\n", systemTimestamp, avg));
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
 		}
+		return avg;
 	}
 
 	public void logADFPosition(long systemTimestamp, double[] pos){
@@ -166,11 +175,11 @@ public class ProtocolHandler {
 			File file = new File(STORAGE_PATH + "initialLocalization.csv");
 			FileWriter writer = new FileWriter(file,true);
 			if(!file.exists()){
-				writer.append("# date\tsystem-timestamp\tadf-uuid\ttime-to-localization\tdistance-traveled\tx\ty\tz\n");
+				writer.append("# date\tsystem-timestamp\tadf-uuid\ttime-to-localization\tdistance-traveled\tx\ty\tz\tangle\n");
 			}
-			writer.append(String.format("%s\t%d\t%s\t%d\t%s\t%s\t%s\t%s\n",
+			writer.append(String.format("%s\t%d\t%s\t%d\t%s\t%s\t%s\t%s\t%s\n",
 					TIMESTAMP,timestamp,uuid,timeToLocalization,distanceTraveled,
-					translation[0], translation[1], translation[2]));
+					translation[0], translation[1], translation[2], angles.getMean()));
 			writer.flush();
 			writer.close();
 		} catch (IOException e) {
