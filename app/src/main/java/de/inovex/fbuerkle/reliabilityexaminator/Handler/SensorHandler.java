@@ -63,7 +63,7 @@ public class SensorHandler implements SensorEventListener{
 		mSensorManager.getRotationMatrix(mRotationMatrix,null,mAccelerometerReading,mMagnetometerReading);
 		mSensorManager.getOrientation(mRotationMatrix,mOrientationAngles);
 		double angle = -1.0;
-		// Jellowstone has API-Version 19, Phab has 23
+		// Jellowstone has Landscape-default, Phab Portrait
 		if(getDeviceDefaultOrientation() == Configuration.ORIENTATION_LANDSCAPE){
 			angle = mOrientationAngles[1] * -180 / Math.PI;
 		} else {
