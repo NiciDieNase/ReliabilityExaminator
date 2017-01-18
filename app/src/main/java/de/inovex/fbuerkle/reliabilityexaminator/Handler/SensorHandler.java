@@ -59,7 +59,6 @@ public class SensorHandler implements SensorEventListener{
 	}
 
 	public void updateOrientationAngles(){
-		// TODO handle Phab 2 Pro (Axes are different)
 		mSensorManager.getRotationMatrix(mRotationMatrix,null,mAccelerometerReading,mMagnetometerReading);
 		mSensorManager.getOrientation(mRotationMatrix,mOrientationAngles);
 		double angle = -1.0;
