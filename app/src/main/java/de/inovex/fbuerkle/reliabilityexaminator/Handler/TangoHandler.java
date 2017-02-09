@@ -164,6 +164,7 @@ public class TangoHandler {
 					setupTangoListener();
 					TangoUx.StartParams params = new TangoUx.StartParams();
 					params.showConnectionScreen = false;
+					long timeMillis = System.currentTimeMillis();
 					mTangoUx.start(params);
 					try {
 						mTango.connect(mConfig);
@@ -183,8 +184,10 @@ public class TangoHandler {
 						}
 					} catch (final TangoInvalidException e){
 						handleException(e);
+						Log.d(TAG,String.format("Time to Exception: %d ms ADF: %s", System.currentTimeMillis()-timeMillis, uuid));
 					} catch (final TangoErrorException e){
 						handleException(e);
+						Log.d(TAG,String.format("Time to Exception: %d ms ADF: %s", System.currentTimeMillis()-timeMillis, uuid));
 					}
 				}
 			}
